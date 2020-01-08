@@ -1,0 +1,22 @@
+[
+    [
+		{"area": "외모차별 X", "value": 80, "type":"major"},
+		{"area": "나이차별 X", "value": 40, "type":"major"},
+		{"area": "중산층 이상 경제력", "value": 40, "type":"major"},
+		{"area": "비장애인", "value": 90, "type":"major"},
+		{"area": "남성", "value": 60, "type":"major"},
+		{"area": "이성애자", "value": 80, "type":"major"},
+		{"area": "고학력", "value": 50, "type":"major"},
+		{"area": "서울", "value": 30, "type":"major"},
+		{"area": "한국인", "value": 90, "type":"major"},
+		{"area": "외모차별 O", "value": 20, "type":"minor"},
+		{"area": "나이차별 O", "value": 60, "type":"minor"},
+		{"area": "중산층 이하 경제력", "value": 60, "type":"minor"},
+		{"area": "장애인", "value": 10, "type":"minor"},
+		{"area": "여성", "value": 40, "type":"minor"},
+		{"area": "성소수자", "value": 20, "type":"minor"},
+		{"area": "저학력", "value": 50, "type":"minor"},
+		{"area": "비서울", "value": 70, "type":"minor"},
+		{"area": "외국인", "value": 10, "type":"minor"}
+  	]
+]

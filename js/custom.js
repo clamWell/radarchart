@@ -1,200 +1,233 @@
-var RadarChart = {
-  draw: function(id, d, options){
-    var cfg = {
-     radius: 5,
-     w: 600,
-     h: 600,
-     factor: 1,
-     factorLegend: .85,
-     levels: 3,
-     maxValue: 0,
-     radians: 2 * Math.PI,
-     opacityArea: 0.5,
-     ToRight: 5,
-     TranslateX: 80,
-     TranslateY: 30,
-     ExtraWidthX: 100,
-     ExtraWidthY: 100,
-     color: d3.scaleOrdinal().range(["#6F257F", "#CA0D59"])
-    };
-	
-    if('undefined' !== typeof options){
-      for(var i in options){
-      if('undefined' !== typeof options[i]){
-        cfg[i] = options[i];
-      }
-      }
-    }
+$(function(){
+	var ieTest = false,
+		screenWidth = $(window).width(),
+		screenHeight = $(window).height(),
+		imgURL = "http://img.khan.co.kr/spko/storytelling/2019/running/",
+		isMobile = screenWidth <= 800 && true || false,
+		isNotebook = (screenWidth <= 1300 && screenHeight < 750) && true || false,
+		isMobileLandscape = ( screenWidth > 400 && screenWidth <= 800 && screenHeight < 450 ) && true || false;
 
-	function radarColor(d){
-		if(d=="major"){
-			return "#ffbc66";
-		}else if(d=="minor"){			
-			return "#226bff";
-		}
-	};
-    
-    cfg.maxValue = 100;
-    
-    var allAxis = (d[0].map(function(i, j){return i.area}));
-    var total = allAxis.length;
-    var radius = cfg.factor*Math.min(cfg.w/2, cfg.h/2);
-    var Format = d3.format('%');
-    d3.select(id).select("svg").remove();
-
-    var g = d3.select(id)
-        .append("svg")
-        .attr("width", cfg.w+cfg.ExtraWidthX)
-        .attr("height", cfg.h+cfg.ExtraWidthY)
-        .append("g")
-        .attr("transform", "translate(" + cfg.TranslateX + "," + cfg.TranslateY + ")");
-
-		var tooltip;
-	
-    //Circular segments
-    for(var j=0; j<cfg.levels; j++){
-      var levelFactor = cfg.factor*radius*((j+1)/cfg.levels);
-      g.selectAll(".levels")
-       .data(allAxis)
-       .enter()
-       .append("svg:line")
-       .attr("x1", function(d, i){return levelFactor*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
-       .attr("y1", function(d, i){return levelFactor*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
-       .attr("x2", function(d, i){return levelFactor*(1-cfg.factor*Math.sin((i+1)*cfg.radians/total));})
-       .attr("y2", function(d, i){return levelFactor*(1-cfg.factor*Math.cos((i+1)*cfg.radians/total));})
-       .attr("class", "line")
-       .style("stroke", "grey")
-       .style("stroke-opacity", "0.75")
-       .style("stroke-width", "0.3px")
-       .attr("transform", "translate(" + (cfg.w/2-levelFactor) + ", " + (cfg.h/2-levelFactor) + ")");
-    }
-
-    //Text indicating at what % each level is
-    for(var j=0; j<cfg.levels; j++){
-      var levelFactor = cfg.factor*radius*((j+1)/cfg.levels);
-      g.selectAll(".levels")
-       .data([1]) //dummy data
-       .enter()
-       .append("svg:text")
-       .attr("x", function(d){return levelFactor*(1-cfg.factor*Math.sin(0));})
-       .attr("y", function(d){return levelFactor*(1-cfg.factor*Math.cos(0));})
-       .attr("class", "legend")
-       .style("font-family", "sans-serif")
-       .style("font-size", "10px")
-       .attr("transform", "translate(" + (cfg.w/2-levelFactor + cfg.ToRight) + ", " + (cfg.h/2-levelFactor) + ")")
-       .attr("fill", "#737373")
-       .text((j+1)*100/cfg.levels);
-    }
-
-    series = 0;
-
-    var axis = g.selectAll(".axis")
-        .data(allAxis)
-        .enter()
-        .append("g")
-        .attr("class", "axis");
-
-    axis.append("line")
-      .attr("x1", cfg.w/2)
-      .attr("y1", cfg.h/2)
-      .attr("x2", function(d, i){return cfg.w/2*(1-cfg.factor*Math.sin(i*cfg.radians/total));})
-      .attr("y2", function(d, i){return cfg.h/2*(1-cfg.factor*Math.cos(i*cfg.radians/total));})
-      .attr("class", "line")
-      .style("stroke", "grey")
-      .style("stroke-width", "1px");
-
-    axis.append("text")
-      .attr("class", "legend")
-      .text(function(d){return d})
-      .style("font-family", "sans-serif")
-      .style("font-size", "11px")
-      .attr("text-anchor", "middle")
-      .attr("dy", "1.5em")
-      .attr("transform", function(d, i){return "translate(0, -10)"})
-      .attr("x", function(d, i){return cfg.w/2*(1-cfg.factorLegend*Math.sin(i*cfg.radians/total))-60*Math.sin(i*cfg.radians/total);})
-      .attr("y", function(d, i){return cfg.h/2*(1-Math.cos(i*cfg.radians/total))-20*Math.cos(i*cfg.radians/total);});
-
- 
-    d.forEach(function(y, x){
-      dataValues = [];
-      g.selectAll(".nodes")
-      .data(y, function(j, i){
-        dataValues.push([
-        cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-        cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-        ]);
-      });
-      dataValues.push(dataValues[0]);
-      g.selectAll(".area")
-             .data([dataValues])
-             .enter()
-             .append("polygon")
-             .attr("class", "radar-chart-serie"+series)
-             .style("stroke-width", "2px")
-             .style("stroke", cfg.color(series))
-             .attr("points",function(d) {
-               var str="";
-               for(var pti=0;pti<d.length;pti++){
-                 str=str+d[pti][0]+","+d[pti][1]+" ";
-               }
-               return str;
-              })
-             .style("fill", function(j, i){return cfg.color(series)})
-             .style("fill-opacity", cfg.opacityArea)
-             .on('mouseover', function (d){
-                      z = "polygon."+d3.select(this).attr("class");
-                      g.selectAll("polygon")
-                       .transition(200)
-                       .style("fill-opacity", 0.1); 
-                      g.selectAll(z)
-                       .transition(200)
-                       .style("fill-opacity", .7);
-                      })
-             .on('mouseout', function(){
-                      g.selectAll("polygon")
-                       .transition(200)
-                       .style("fill-opacity", cfg.opacityArea);
-             });
-      series++;
-    });
-    series=0;
+	var svgWidth = (screenWidth > 600)? 600 : screenWidth,
+		svgHeight = (screenHeight > 600) ? 600: screenHeight,
+	    barHeight = svgHeight / 2 - 40;
 
 
-var tooltip = d3.select("body").append("div").attr("class", "toolTip");
-    d.forEach(function(y, x){
-      g.selectAll(".nodes")
-      .data(y).enter()
-      .append("svg:circle")
-      .attr("class", "radar-chart-serie"+series)
-      .attr('r', cfg.radius)
-      .attr("alt", function(j){return Math.max(j.value, 0)})
-      .attr("cx", function(j, i){
-        dataValues.push([
-        cfg.w/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total)), 
-        cfg.h/2*(1-(parseFloat(Math.max(j.value, 0))/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total))
-      ]);
-      return cfg.w/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.sin(i*cfg.radians/total));
-      })
-      .attr("cy", function(j, i){
-        return cfg.h/2*(1-(Math.max(j.value, 0)/cfg.maxValue)*cfg.factor*Math.cos(i*cfg.radians/total));
-      })
-      .attr("data-id", function(j){return j.area})
-      .style("fill", "#fff")
-      .style("stroke-width", "2px")
-      .style("stroke", cfg.color(series)).style("fill-opacity", .9)
-      .on('mouseover', function (d){
-        console.log(d.area)
-            tooltip
-              .style("left", d3.event.pageX - 40 + "px")
-              .style("top", d3.event.pageY - 80 + "px")
-              .style("display", "inline-block")
-      				.html((d.area) + "<br><span>" + (d.value) + "</span>");
-            })
-    		.on("mouseout", function(d){ tooltip.style("display", "none");});
-
-      series++;
-    });
-    }
-};
+	var svg = d3.select("svg")
+		.attr("width", svgWidth)
+		.attr("height", svgHeight)
+	  .append("g")
+		.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")");
 
 
+	var graphBack = svg.append("g")
+		.attr("class","graph-back");
+
+	 var rectMajor = graphBack.append("rect")
+		.attr("x", "0")
+		.attr("y", "0")
+		.attr("width", svgWidth)
+		.attr("height", svgHeight/2)
+		.attr("fill", "rgba(255, 240, 158, 0.1)")
+		.attr("class", "bg-major")
+		.attr("transform", "translate(" + -svgWidth/2 + "," + -svgHeight/2 + ")");
+
+	 var rectMinor = graphBack.append("rect")
+		.attr("x", "0")
+		.attr("y", "0")
+		.attr("width", svgWidth)
+		.attr("height", svgHeight/2)
+		.attr("fill", "rgba(255, 63, 0, 0.1)")
+		.attr("class", "bg-minor")
+		.attr("transform", "translate(" + -svgWidth/2 + "," + 0 + ")");
+
+	graphBack.append("text")
+		.attr("x", "15")
+		.attr("y", "25")
+		.style("font-weight","normal")
+		.style("font-size","16")
+		.style("fill", function(d, i) {return "#fff";})
+		.text("특권영역")
+		.attr("class", "graph-semi-title")
+		.attr("text-anchor", "start")
+		.attr("transform", "translate(" + -svgWidth/2 + "," + -svgWidth/2 + ")");
+
+	graphBack.append("text")
+		.attr("x", "15")
+		.attr("y", "-15")
+		.style("font-weight","normal")
+		.style("font-size","16")
+		.style("fill", function(d, i) {return "#fff";})
+		.text("차별영역")
+		.attr("class", "graph-semi-title")
+		.attr("text-anchor", "start")
+		.attr("transform", "translate(" + -svgWidth/2 + "," + svgWidth/2 + ")");
+
+
+	var circleGraphHolder = svg.append("g")
+		.attr("class","circle-graph-holder");
+
+	//d3.json("js/data.json", function(error, data) {
+	d3.json("js/data.json?" + new Date().getTime(), function(error, data) {
+		if (error) throw error;
+		//data.sort(function(a,b) { return b.value - a.value; });
+
+		//d3.extent() 배열을 받으면 그 배열중 최소값, 최대값을 배열로 반환
+		//var extent = d3.extent(data, function(d) { return d.value; });
+		//우리는 최대값 5로 고정이므로 
+		var extent = [0, 10]; 
+
+		var barScale = d3.scaleLinear()
+		  .domain(extent)
+		  .range([0, barHeight]);
+
+		//키값 배열로 저장
+		var keys = data.map(function(v,i,a) { return a[i].area; });
+	//	console.log(keys);
+		var numBars = keys.length; //전체길이: 9x2 = 18
+
+		//x축
+		var xScale = d3.scaleLinear()
+		  .domain(extent)
+		  .range([0, -barHeight]);
+
+		var xAxis = d3.axisLeft(xScale)
+		  .ticks(5)
+		  .tickFormat(d3.format("d"));
+
+
+		/*
+		d3.axisLeft(yScale)
+			.ticks(5)
+			.tickFormat(d3.format("d"))*/
+		  
+
+		 //원형으로 축 그려주기
+		 //xScale.ticks(5) =  [0, 20, 40, 60, 80, 100]
+		var circles = circleGraphHolder.selectAll("circle")
+			  .data(xScale.ticks(5))
+			.enter().append("circle")
+			  .attr("r", function(d) {return barScale(d);})
+			  .style("fill", "none")
+			  .style("stroke", "rgba(255,255,255,0.5)")
+			  .style("stroke-dasharray", "2,2")
+			  .style("stroke-width",".5px");
+
+
+		//.arc() 아치(호)를 생성해주는 메소드
+		// .innerRadius() 안쪽 반지름 값, 0이면 안쪽 반지름이 없기 때문에 그래프가 완전한 원이 되고 값이 있으면 도넛 형태
+		// .outerRadius() 바깥쪽 반지름값
+		// 데이터에 알맞게 아치 객체를 생성해준 후에 path의 d 값으로 객체의 값을 넘겨줘야한다. 
+		var arc = d3.arc()
+			.innerRadius(0)
+			.startAngle(function(d,i) { return (i * 2 * Math.PI) / numBars; }) //시작각
+			.endAngle( function(d,i) { return ((i + 1) * 2 * Math.PI) / numBars; }); //끝각			
+
+		var tooltip = d3.select(".tooltip");
+
+		// 아치 객체를 이용해 각 bar segment를 생성해준다. 
+		var segments =  circleGraphHolder.selectAll("path")
+				.data(data)
+			.enter().append("path")
+				.each(function(d,i) {  //데이터 값에 맞게 길이를 반환해줌
+					var radi = barScale(d.value);
+					d.outerRadius = radi;
+				})
+				.style("fill", function(d,i){
+					if(d.type=="major"){
+						return "#d8bf27";
+					}else if(d.type=="minor") {
+						return "#850000";				
+					}			
+				})
+				.attr("d", arc)
+				.attr("class", "each-graph")
+				.attr("filter", "url(#glow)");
+
+		segments.on("mouseover", function(d) {
+				d3.select(this).classed("graph-hover", true);
+				tooltip
+				  .style("left", d3.event.pageX - 30 + "px")
+				  .style("top", d3.event.pageY - 160 + "px")
+				  .style("display", "inline-block")
+				  .html((d.area) + "<br><span>" + (d.value) + "</span>");
+				
+			})
+			.on("mouseout", function(d) {
+				d3.select(this).classed("graph-hover", false)
+				tooltip.style("display", "none");
+			});
+
+
+		// 각 bar segment에 애니메이션 효과
+		/*	segments.transition().ease("elastic").duration(1000).delay(function(d,i) {return (25-i)*100;})
+			  .attrTween("d", function(d,index) {
+				var i = d3.interpolate(d.outerRadius, barScale(+d.value));
+				return function(t) { d.outerRadius = i(t); return arc(d,index); };
+			  });*/
+
+		// 가장 밖의 원 테두리 
+		 circleGraphHolder.append("circle")
+		  .attr("r", barHeight)
+		  .classed("outer", true)
+		  .style("fill", "none")
+		  .style("stroke", "#fff")
+		  .style("stroke-opacity", "0.5")
+		  .style("stroke-width","3px");
+
+		// 각 bar segment를 가르는 라인
+		var lines =  circleGraphHolder.selectAll("line")
+		  .data(keys)
+		.enter().append("line")
+		  .attr("y2", -barHeight )
+		  .style("stroke", "#fff")
+		  .style("stroke-width",".5px")
+		  .attr("transform", function(d, i) { return "rotate(" + (i * 360 / numBars) + ")"; });
+
+	/*
+		var baseLine = svg.selectAll("line")
+			.data(basedata)
+			.enter().append("line")
+			.classed("baseline", true)
+			.attr("y2", -barHeight )
+			.style("stroke", "#fff")
+			.style("stroke-width","2px");		*/
+
+		var baseLine =  circleGraphHolder.append("line")
+			.classed("baseline", true)
+			.attr("y2",(barHeight+50)*2 )
+			.style("stroke", "#850000")
+			.style("stroke-width","2px")
+			.attr("transform", "translate(0,"+ -1*(barHeight+50)+")");
+
+		// 척도 나타내는 축 생성 
+		 circleGraphHolder.append("g")
+		.attr("class", "x axis")
+		.call(xAxis);
+
+
+		// 각 항목별 텍스트 라벨
+		var labelRadius = barHeight * 1.025;
+
+		var labels =  circleGraphHolder.append("g")
+		  .classed("labels", true);
+
+		labels.append("def")
+			.append("path")
+			.attr("id", "label-path")
+			.attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
+
+		labels.selectAll("text")
+			.data(keys)
+		  .enter().append("text")
+			.style("text-anchor", "middle")
+			.style("font-weight","normal")
+			.style("font-size","12")
+			.style("fill", function(d, i) {return "#fff";})
+			.append("textPath")
+			.attr("xlink:href", "#label-path")
+			.attr("startOffset", function(d, i) {return i * 100 / numBars + 50 / numBars + '%';})
+			.text(function(d) {return d.toUpperCase(); });
+
+	});
+
+});
