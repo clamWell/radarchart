@@ -1,19 +1,1 @@
 
-    [
-		{"area": "외모차별 X", "value": 4, "type":"major"},
-		{"area": "나이차별 X", "value": 6, "type":"major"},
-		{"area": "경제력(중산층)", "value": 8, "type":"major"},
-		{"area": "비장애인", "value": 10, "type":"major"},
-		{"area": "성별", "value": 0, "type":"major"},
-		{"area": "이성애", "value": 8, "type":"major"},
-		{"area": "고학력", "value": 8, "type":"major"},
-		{"area": "서울", "value": 0, "type":"major"},
-		{"area": "외모차별 O", "value": 0, "type":"minor"},
-		{"area": "나이차별 O", "value": 0, "type":"minor"},
-		{"area": "경제력(중산층)", "value": 0, "type":"minor"},
-		{"area": "장애", "value": 0, "type":"minor"},
-		{"area": "성별", "value": 4, "type":"minor"},
-		{"area": "성소수자", "value": 0, "type":"minor"},
-		{"area": "저학력", "value": 0, "type":"minor"},
-		{"area": "지방", "value":6, "type":"minor"}
-  	]
