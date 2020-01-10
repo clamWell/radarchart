@@ -10,48 +10,50 @@ $(function(){
 	var svgWidth = (screenWidth > 600)? 600 : screenWidth,
 		svgHeight = (screenHeight > 600) ? 600: screenHeight,
 	    barHeight = svgHeight / 2 - 40;
-	var powerCategory =  ["외모차별 X", "나이차별 X", "경제력(중산층)", "비장애인", "성별", "이성애", "고학력", "서울", "외모차별 O", "나이차별 O", "경제력(중산층)", "장애", "성별", "성소수자", "저학력", "지방"];
+	var powerCategory =  ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
+
+	
 	var circleAxisBgColor = ["#cfcfcf", "#d8d8d8", "#e1e1e1", "#ebebeb","#f5f5f5"];
 	var randomRange = function(n1, n2) {
 		return Math.floor((Math.random() * (n2 - n1 + 1)) + n1);
 	};
 
 	var interviewwData1 = [
-		{"area": "외모차별 X", "value": 4, "type":"major"},
-		{"area": "나이차별 X", "value": 0, "type":"major"},
-		{"area": "경제력(중산층)", "value": 2, "type":"major"},
-		{"area": "비장애인", "value": 5, "type":"major"},
-		{"area": "성별", "value": 0, "type":"major"},
-		{"area": "이성애", "value": 5, "type":"major"},
-		{"area": "고학력", "value": 2, "type":"major"},
-		{"area": "서울", "value": 0, "type":"major"},
-		{"area": "외모차별 O", "value": 0, "type":"minor"},
-		{"area": "나이차별 O", "value": 4, "type":"minor"},
-		{"area": "경제력(중산층)", "value": 0, "type":"minor"},
-		{"area": "장애", "value": 0, "type":"minor"},
-		{"area": "성별", "value": 2, "type":"minor"},
-		{"area": "성소수자", "value": 0, "type":"minor"},
-		{"area": "저학력", "value": 0, "type":"minor"},
-		{"area": "지방", "value":2, "type":"minor"}
+		{area: "성별 차별X", value: 0, type: "major"},
+		{area: "이성애", value: 5, type: "major"},
+		{area: "고학력", value: 2, type: "major"},
+		{area: "서울", value: 0, type: "major"},
+		{area: "외모차별 X", value: 4, type: "major"},
+		{area: "나이차별 X", value: 0, type: "major"},
+		{area: "경제력(중산층)", value: 0, type: "major"},
+		{area: "비장애", value: 5, type: "major"},
+		{area: "성별차별 O", value: 2, type: "minor"},
+		{area: "성소수자", value: 0, type: "minor"},
+		{area: "저학력", value: 0, type: "minor"},
+		{area: "지방", value: 2, type: "minor"},
+		{area: "외모차별 O", value: 0, type: "minor"},
+		{area: "나이차별 O", value: 4, type: "minor"},
+		{area: "경제력(중산층 X)", value: 0, type: "minor"},
+		{area: "장애", value: 0, type: "minor"}
   	];
 
 	var interviewwData2 = [
-		{"area": "외모차별 X", "value": 0, "type":"major"},
-		{"area": "나이차별 X", "value": 4, "type":"major"},
-		{"area": "경제력(중산층)", "value": 3, "type":"major"},
-		{"area": "비장애인", "value": 0, "type":"major"},
-		{"area": "성별", "value": 3, "type":"major"},
-		{"area": "이성애", "value": 0, "type":"major"},
-		{"area": "고학력", "value": 5, "type":"major"},
-		{"area": "서울", "value": 5, "type":"major"},
-		{"area": "외모차별 O", "value": 3, "type":"minor"},
-		{"area": "나이차별 O", "value": 0, "type":"minor"},
-		{"area": "경제력(중산층)", "value": 0, "type":"minor"},
-		{"area": "장애", "value": 3, "type":"minor"},
-		{"area": "성별", "value": 0, "type":"minor"},
-		{"area": "성소수자", "value": 3, "type":"minor"},
-		{"area": "저학력", "value": 0, "type":"minor"},
-		{"area": "지방", "value":0, "type":"minor"}
+		{area: "성별 차별X", value: 3, type: "major"},
+		{area: "이성애", value: 0, type: "major"},
+		{area: "고학력", value: 5, type: "major"},
+		{area: "서울", value: 5, type: "major"},
+		{area: "외모차별 X", value: 0, type: "major"},
+		{area: "나이차별 X", value: 4, type: "major"},
+		{area: "경제력(중산층)", value: 3, type: "major"},
+		{area: "비장애", value: 0, type: "major"},
+		{area: "성별차별 O", value: 0, type: "minor"},
+		{area: "성소수자", value: 3, type: "minor"},
+		{area: "저학력", value: 0, type: "minor"},
+		{area: "지방", value: 0, type: "minor"},
+		{area: "외모차별 O", value: 3, type: "minor"},
+		{area: "나이차별 O", value: 0, type: "minor"},
+		{area: "경제력(중산층 X)", value: 0, type: "minor"},
+		{area: "장애", value: 3, type: "minor"}
   	];
 
 
@@ -78,6 +80,7 @@ $(function(){
 				.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")");
 		var graphBack = svg.append("g")
 			.attr("class","graph-back");
+
 		graphBack.append("text")
 			.attr("x", "15")
 			.attr("y", "25")
@@ -146,7 +149,7 @@ $(function(){
 						if(d.type=="major"){
 							return "url(#greenGrad)";
 						}else if(d.type=="minor") {
-							return "#ff561b";				
+							return "url(#redGrad)";				
 						}			
 					})
 					.attr("d", arc)
@@ -161,14 +164,16 @@ $(function(){
 					})
 					.style("fill", function(d,i){
 						if(d.type=="major"){
-							return "url(#greenGrad)";
+							//return "url(#greenGrad)";
+							return "#40a778";
 						}else if(d.type=="minor") {
-							return "url(#redGrad)";				
+							//return "url(#redGrad)";	
+							return "#f16d48";
 						}			
 					})
 					.attr("d", arc)
 					.attr("class", "each-graph")
-					.attr("filter", "url(#glow)");		
+					//.attr("filter", "url(#glow)");		
 
 			var tooltip = d3.select(".tooltip");
 			segments.on("mouseover", function(d) {
@@ -195,14 +200,16 @@ $(function(){
 					})
 					.style("fill", function(d,i){
 						if(d.type=="major"){
-							return "url(#greenGrad)";
+							//return "url(#greenGrad)";
+							return "#40a778";
 						}else if(d.type=="minor") {
-							return "url(#redGrad)";				
+							//return "url(#redGrad)";	
+							return "#f16d48";
 						}			
 					})
 					.attr("d", arc)
 					.attr("class", "each-graph")
-					.attr("filter", "url(#glow)");	
+					//.attr("filter", "url(#glow)");		
 		}
 
 
@@ -260,14 +267,55 @@ $(function(){
 
 
 	makeChartBasic("#headGraph", introChartData, svgWidth, "intro", 20);
-	makeChartBasic("#userResult", interviewwData1, svgWidth, "user", 20);
-	makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
-	makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
 			
 	$(".loading-page").fadeOut(200, function(){
 		
 	});
 
+
+	var userTestData = [];
+	for(i=0;i<powerCategory.length;i++){
+		var obj = {};
+		obj.area = powerCategory[i];
+		obj.value = 0;
+		obj.type = (i>7)? "minor":"major";
+		userTestData.push(obj);
+	};
+	
+	//var value = $(":input:radio[name=que_1_answer]:checked").val();
+
+	var userChoice = [0,0,0,0,0,0,0,0];
+	$(".test-form .each-scale .anw-button").on("click", function(e){
+		var clickedQueNum = $(this).siblings(".radio-hidden").attr("name").slice(4,5);
+		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
+		var clickedPower = (clickedValue > 0)? "minor" : "major";
+	
+		//console.log(clickedQueNum+"번째 질문의 답으로"+clickedPower + clickedValue+"선택");
+		if(clickedPower == "minor"){
+			userTestData[Number(clickedQueNum)+8-1].value = Math.abs(clickedValue);
+			userTestData[Number(clickedQueNum)-1].value = 0;
+			userChoice[clickedQueNum-1] = "minor";
+		}else if(clickedPower == "major"){ 
+			userTestData[Number(clickedQueNum)-1].value = Math.abs(clickedValue);
+			userTestData[Number(clickedQueNum)+8-1].value = 0;
+			userChoice[clickedQueNum-1] = "major";
+		}
+	});
+
+	function drawUserScaleBlcok(){
+		var $blockHolder = $(".user-result-table .scale-block-holder");
+		for(i=0;i<$blockHolder.length;i++){
+			$blockHolder.eq(i).removeClass("block-minor block-major");
+			$blockHolder.eq(i).addClass("block-"+userChoice);
+			$blockHolder.eq(i).html("");
+			for(n=0;n<userTestData[i].value;n++){
+				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
+			}
+			for(m=0;m<userTestData[i+8];m++){
+				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
+			}
+		}
+	};
 	
 	function showTestPage(){
 		$(".page--1").fadeOut(function(){
@@ -279,6 +327,12 @@ $(function(){
 
 	function showResultPage(){
 		$(".page--2").fadeOut(function(){			
+			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
+			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
+			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
+			console.log(userTestData);
+			console.log(userChoice);
+			drawUserScaleBlcok();
 			$(".page--3").fadeIn();		
 			var resultPagePosTop = $(".user-result-header").offset().top;
 			$("html, body").animate({scrollTop: resultPagePosTop -100}, 500, "swing");
@@ -292,5 +346,6 @@ $(function(){
 	$("#goResultBtn").on("click", function(){
 		showResultPage();
 	});
+
 
 });
