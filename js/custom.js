@@ -12,7 +12,7 @@ $(function(){
 	    barHeight = svgHeight / 2 - 40;
 	var powerCategory =  ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
 
-	
+
 	var circleAxisBgColor = ["#cfcfcf", "#d8d8d8", "#e1e1e1", "#ebebeb","#f5f5f5"];
 	var randomRange = function(n1, n2) {
 		return Math.floor((Math.random() * (n2 - n1 + 1)) + n1);
@@ -68,16 +68,15 @@ $(function(){
 	}
 	function makeChartBasic(svgName, chartData, chartWidth, type, padding){
 		var data = chartData,
-			svgWidth = svgHeight = chartWidth
-			type = type,
-			padding = padding,
+			svgWidth = svgHeight = chartWidth,
 			barHeight = svgHeight / 2 - (padding*2);
-		
+
 		var svg = d3.select(svgName)
 			.attr("width", svgWidth)
 			.attr("height", svgHeight)
 			.append("g")
-				.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")");
+				.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")")
+				.attr("class", "svgHolder");
 		var graphBack = svg.append("g")
 			.attr("class","graph-back");
 
@@ -105,14 +104,14 @@ $(function(){
 		var circleGraphHolder = svg.append("g")
 			.attr("class","circle-graph-holder");
 
-		var extent = [0, 5]; 
+		var extent = [0, 5];
 
 		var barScale = d3.scaleLinear()
 		  .domain(extent)
 		  .range([0,barHeight]);
 
 		var keys = powerCategory;
-		var numBars = keys.length; 
+		var numBars = keys.length;
 
 		//x축
 		var xScale = d3.scaleLinear()
@@ -122,7 +121,7 @@ $(function(){
 		var xAxis = d3.axisLeft(xScale)
 		  .ticks(5)
 		  .tickFormat(d3.format("d"));
-		  
+
 		//원형으로 축 그려주기
 		var circles = circleGraphHolder.selectAll("circle")
 			  .data(xScale.ticks(5))
@@ -136,25 +135,47 @@ $(function(){
 		var arc = d3.arc()
 				.innerRadius(0)
 				.startAngle(function(d,i) { return (i * 2 * Math.PI) / numBars; }) //시작각
-				.endAngle( function(d,i) { return ((i + 1) * 2 * Math.PI) / numBars; }); //끝각			
+				.endAngle( function(d,i) { return ((i + 1) * 2 * Math.PI) / numBars; }); //끝각
 		if(type=="intro"){
+
+			var checkPoint = new Array(data.length);
+			checkPoint.forEach(function(v,i,a){
+				v[i] = 0;
+			});
+
 			var segments = circleGraphHolder.selectAll("path")
 					.data(data)
 				.enter().append("path")
-					.each(function(d,i) { 
-						var radi = barScale(randomRange(0,5) );
-						d.outerRadius = radi;
+					.each(function(d,i) {
+						var radi = barScale(randomRange(1,5) );
+
+						if (i < data.length/2){
+							if (randomRange(0, 1) == 1){
+								checkPoint[i] = 1;
+								d.outerRadius = radi;
+							} else {
+								checkPoint[i] = 0;
+								d.outerRadius = 0;
+							}
+						} else {
+							if (checkPoint[i-(data.length/2)] == 0) {
+								d.outerRadius = radi;
+							} else {
+								d.outerRadius = 0;
+							}
+						}
+
 					})
 					.style("fill", function(d,i){
 						if(d.type=="major"){
 							return "url(#greenGrad)";
 						}else if(d.type=="minor") {
-							return "url(#redGrad)";				
-						}			
+							return "url(#redGrad)";
+						}
 					})
 					.attr("d", arc)
 					.attr("class", "each-graph");
-		}else if(type=="user"){
+		} else if(type=="user"){
 			var segments =  circleGraphHolder.selectAll("path")
 					.data(data)
 				.enter().append("path")
@@ -167,13 +188,13 @@ $(function(){
 							//return "url(#greenGrad)";
 							return "#40a778";
 						}else if(d.type=="minor") {
-							//return "url(#redGrad)";	
+							//return "url(#redGrad)";
 							return "#f16d48";
-						}			
+						}
 					})
 					.attr("d", arc)
 					.attr("class", "each-graph")
-					//.attr("filter", "url(#glow)");		
+					//.attr("filter", "url(#glow)");
 
 			var tooltip = d3.select(".tooltip");
 			segments.on("mouseover", function(d) {
@@ -183,7 +204,7 @@ $(function(){
 					  .style("top", d3.event.pageY - 160 - (svgHeight/2) + "px")
 					  .style("display", "inline-block")
 					  .html((d.area) + "<br><span>" + (d.value) + "</span>");
-					
+
 				})
 				.on("mouseout", function(d) {
 					d3.select(this).classed("graph-hover", false)
@@ -203,17 +224,17 @@ $(function(){
 							//return "url(#greenGrad)";
 							return "#40a778";
 						}else if(d.type=="minor") {
-							//return "url(#redGrad)";	
+							//return "url(#redGrad)";
 							return "#f16d48";
-						}			
+						}
 					})
 					.attr("d", arc)
 					.attr("class", "each-graph")
-					//.attr("filter", "url(#glow)");		
+					//.attr("filter", "url(#glow)");
 		}
 
 
-		// 가장 밖의 원 테두리 
+		// 가장 밖의 원 테두리
 		 circleGraphHolder.append("circle")
 		  .attr("r", barHeight)
 		  .classed("outer", true)
@@ -266,12 +287,54 @@ $(function(){
 	};
 
 
-	makeChartBasic("#headGraph", introChartData, svgWidth, "intro", 20);
-			
-	$(".loading-page").fadeOut(200, function(){
-		
-	});
+	var introAni;
+	function startIntroAni(){
+		introAni = setInterval(function(){
+			var arc = d3.arc()
+					.innerRadius(0)
+					.startAngle(function(d,i) { return (i * 2 * Math.PI) / 16; }) //시작각
+					.endAngle( function(d,i) { return ((i + 1) * 2 * Math.PI) / 16; }); //끝각
 
+			var extent = [0, 5];
+
+			var barScale = d3.scaleLinear()
+			  .domain([0, 5])
+			  .range([0, svgHeight / 2 - 40]);
+
+			var checkPoint = new Array(introChartData.length);
+			checkPoint.forEach(function(v,i,a){
+			  v[i] = 0;
+			});
+
+			d3.select("#headGraph").selectAll("path").data(introChartData)
+			.each(function(d,i) {
+				var radi = barScale(randomRange(1,5) );
+				if (i < introChartData.length/2){
+					if (randomRange(0, 1) == 1){
+						checkPoint[i] = 1;
+						d.outerRadius = radi;
+					} else {
+						checkPoint[i] = 0;
+						d.outerRadius = 0;
+					}
+				} else {
+					if (checkPoint[i-(introChartData.length/2)] == 0) {
+						d.outerRadius = radi;
+					} else {
+						d.outerRadius = 0;
+					}
+				}
+			})
+			.transition(1200)
+			.attr("d", arc);
+		}, 1500);
+	}
+
+	makeChartBasic("#headGraph", introChartData, svgWidth, "intro", 20);
+
+	$(".loading-page").fadeOut(200, function(){
+		startIntroAni();
+	});
 
 	var userTestData = [];
 	for(i=0;i<powerCategory.length;i++){
@@ -281,8 +344,7 @@ $(function(){
 		obj.type = (i>7)? "minor":"major";
 		userTestData.push(obj);
 	};
-	
-	//var value = $(":input:radio[name=que_1_answer]:checked").val();
+
 
 	var userChoice = [0,0,0,0,0,0,0,0];
 	$(".test-form .each-scale .anw-button").on("click", function(e){
@@ -290,17 +352,15 @@ $(function(){
 		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
 		var clickedPower = (clickedValue > 0)? "minor" : "major";
 	
-		//console.log(clickedQueNum+"번째 질문의 답으로"+clickedPower + clickedValue+"선택");
 		if(clickedPower == "minor"){
 			userTestData[Number(clickedQueNum)+8-1].value = Math.abs(clickedValue);
 			userTestData[Number(clickedQueNum)-1].value = 0;
 			userChoice[clickedQueNum-1] = "minor";
-		}else if(clickedPower == "major"){ 
+		}else if(clickedPower == "major"){
 			userTestData[Number(clickedQueNum)-1].value = Math.abs(clickedValue);
 			userTestData[Number(clickedQueNum)+8-1].value = 0;
 			userChoice[clickedQueNum-1] = "major";
 		}
-		console.log( checkRadioBtnStatus());
 		$(".bottom-fixed-bar .progress-bar .progress-text p .done").html( checkRadioBtnStatus());
 		$(".bottom-fixed-bar .progress-bar .progress-body").animate({"width":100/8*checkRadioBtnStatus()+ "%"}, 400, "swing");
 	});
@@ -308,12 +368,10 @@ $(function(){
 	var checkedPoint;
 	function checkRadioBtnStatus(){
 		checkedPoint = 0;
-		for(r=0; r<$(".que-list .radioBtn-holder").length; r++){
-			var radioBtnName = "que_"+Number(r+1)+"_answer";
-			var isChecked = $("input:radio[name='"+radioBtnName+"']").is(":checked");
-			if( isChecked == true){
+		for(u=0; u< userChoice.length; u++){
+			if( isNaN(userChoice[u])){		
 				checkedPoint++;
-			}		
+			}
 		}
 		if(checkedPoint>=8){ $("#goResultBtn").removeClass("button-blocked");  }
 		return checkedPoint;
@@ -335,7 +393,25 @@ $(function(){
 	function inputUserWord(){
 		userInfoData[2] = $("textarea#user-opinion").val();
 	}
-
+	
+	function drawPercentBar(){
+		var majorNumb = 0,
+			minorNumb = 0;
+		for(m=0; m< userChoice.length; m++){
+			if( userChoice[m] == "major"){		
+				majorNumb++;
+			}
+			if(m==userChoice.length){
+				minorNumb = userChoice.length-majorNumb;
+			}
+		}
+		var majorPer = Math.round(100/8*majorNumb),
+			minorPer = 100 - majorPer;
+		$(".bar-body").css({"width": minorPer+"%"});
+		$(".result-percent-bar .percent-bar .user-pos").css({"left":minorPer+"%"});
+		$(".side-major .numb").html(majorPer);
+		$(".side-minor .numb").html(minorPer);
+	};
 
 	function drawUserScaleBlcok(){
 		var $blockHolder = $(".user-result-table .scale-block-holder");
@@ -348,14 +424,51 @@ $(function(){
 			$textHead.eq(i).addClass(userChoice[i]);
 			$blockHolder.eq(i).html("");
 			for(n=0;n<userTestData[i].value;n++){
-				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
+				$blockHolder.eq(i).append("<span class='scale-block'></span>");
 			}
 			for(m=0;m<userTestData[i+8].value;m++){
-				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
+				$blockHolder.eq(i).append("<span class='scale-block'></span>");
 			}
 		}
 	};
-	
+
+	function resetTestValue(){
+		 resetRadioValue();
+		 $("textarea#user-opinion").val("");
+		 for(n=0;n<userChoice.length;n++){
+			userChoice[n] = 0;
+		 }
+		 for(d=0;d<userInfoData.length;d++){
+			userInfoData[d] = 0;
+		 }
+		 $("#userResult .svgHolder").remove();
+	};
+	function resetRadioValue(){
+		var radio_name = [];
+		var radio = $("input[type=radio]");
+		$.each(radio, function (key, value) { 
+			radio_name.push($(value).attr("name"));
+		});			
+		radio_name = $.unique(radio_name.sort()).sort(); 
+		console.log(radio_name);		
+		for (var i = 0; i < radio_name.length; i++) {
+			$('input[name="' + radio_name[i] + '"]').removeAttr("checked");		
+			//$('input[name="' + radio_name[i] + '"]')[0].checked = true;		
+		}
+		$(".bottom-fixed-bar .progress-bar .progress-text p .done").html("0");
+		$(".bottom-fixed-bar .progress-bar .progress-body").width("0%");
+		$("#goResultBtn").addClass("button-blocked"); 
+	}
+
+	function goBackTestPage(){
+		resetTestValue();
+		$(".page--3").fadeOut(function(){
+			$(".page--2").fadeIn();	
+			var testPagePosTop = $(".test-area-header").offset().top;
+			$("html, body").animate({scrollTop: testPagePosTop -100}, 500, "swing");
+		});	
+	};	
+
 	function showTestPage(){
 		$(".page--1").fadeOut(function(){
 			$(".page--2").fadeIn();
@@ -365,15 +478,16 @@ $(function(){
 	};
 
 	function showResultPage(){
-		$(".page--2").fadeOut(function(){			
+		$(".page--2").fadeOut(function(){
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
 			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
 			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
 			console.log(userTestData);
 			console.log(userChoice);
 			console.log(userInfoData);
+			drawPercentBar();
 			drawUserScaleBlcok();
-			$(".page--3").fadeIn();		
+			$(".page--3").fadeIn();
 			var resultPagePosTop = $(".user-result-header").offset().top;
 			$("html, body").animate({scrollTop: resultPagePosTop -100}, 500, "swing");
 		});
@@ -381,11 +495,14 @@ $(function(){
 
 
 	$("#goTestBtn").on("click", function(){
+		clearInterval(introAni);
 		showTestPage();
 	});
 	$("#goResultBtn").on("click", function(){
-		inputUserWord();
 		showResultPage();
+	});
+	$("#retest").on("click", function(){
+		goBackTestPage();
 	});
 
 
