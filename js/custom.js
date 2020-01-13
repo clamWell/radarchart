@@ -179,8 +179,8 @@ $(function(){
 			segments.on("mouseover", function(d) {
 					d3.select(this).classed("graph-hover", true);
 					tooltip
-					  //.style("left", d3.event.pageX - 30 + "px")
-					  //.style("top", d3.event.pageY - 160 + "px")
+					  .style("left", d3.event.pageX - 30 - (svgWidth/2)+ "px")
+					  .style("top", d3.event.pageY - 160 - (svgHeight/2) + "px")
 					  .style("display", "inline-block")
 					  .html((d.area) + "<br><span>" + (d.value) + "</span>");
 					
@@ -304,14 +304,18 @@ $(function(){
 
 	function drawUserScaleBlcok(){
 		var $blockHolder = $(".user-result-table .scale-block-holder");
+		var $textHead = $(".user-result-table .majororminor");
 		for(i=0;i<$blockHolder.length;i++){
 			$blockHolder.eq(i).removeClass("block-minor block-major");
-			$blockHolder.eq(i).addClass("block-"+userChoice);
+			$blockHolder.eq(i).addClass("block-"+userChoice[i]);
+			$textHead.eq(i).removeClass("major minor");
+			$textHead.eq(i).html( (userChoice[i]=="major")? "특권":"차별" );
+			$textHead.eq(i).addClass(userChoice[i]);
 			$blockHolder.eq(i).html("");
 			for(n=0;n<userTestData[i].value;n++){
 				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
 			}
-			for(m=0;m<userTestData[i+8];m++){
+			for(m=0;m<userTestData[i+8].value;m++){
 				$blockHolder.eq(i).append("<span class='scale-block'></span>");	
 			}
 		}
