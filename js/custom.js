@@ -300,7 +300,42 @@ $(function(){
 			userTestData[Number(clickedQueNum)+8-1].value = 0;
 			userChoice[clickedQueNum-1] = "major";
 		}
+		console.log( checkRadioBtnStatus());
+		$(".bottom-fixed-bar .progress-bar .progress-text p .done").html( checkRadioBtnStatus());
+		$(".bottom-fixed-bar .progress-bar .progress-body").animate({"width":100/8*checkRadioBtnStatus()+ "%"}, 400, "swing");
 	});
+
+	var checkedPoint;
+	function checkRadioBtnStatus(){
+		checkedPoint = 0;
+		for(r=0; r<$(".que-list .radioBtn-holder").length; r++){
+			var radioBtnName = "que_"+Number(r+1)+"_answer";
+			var isChecked = $("input:radio[name='"+radioBtnName+"']").is(":checked");
+			if( isChecked == true){
+				checkedPoint++;
+			}		
+		}
+		if(checkedPoint>=8){ $("#goResultBtn").removeClass("button-blocked");  }
+		return checkedPoint;
+	};
+
+	var userInfoData = [0,0,0];
+	$(".user-info-que-list .anw-button").on("click", function(e){
+		var clickedQueType = $(this).siblings(".radio-hidden").attr("name").slice(5);
+		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
+		if(clickedQueType=="sex"){
+			userInfoData[0] = clickedValue;
+		}if(clickedQueType=="age"){
+			userInfoData[1] = clickedValue;				
+		}		
+	});
+	$("textarea#user-opinion").bind("input propertychange", function() {
+		inputUserWord();	
+	});
+	function inputUserWord(){
+		userInfoData[2] = $("textarea#user-opinion").val();
+	}
+
 
 	function drawUserScaleBlcok(){
 		var $blockHolder = $(".user-result-table .scale-block-holder");
@@ -336,6 +371,7 @@ $(function(){
 			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
 			console.log(userTestData);
 			console.log(userChoice);
+			console.log(userInfoData);
 			drawUserScaleBlcok();
 			$(".page--3").fadeIn();		
 			var resultPagePosTop = $(".user-result-header").offset().top;
@@ -348,6 +384,7 @@ $(function(){
 		showTestPage();
 	});
 	$("#goResultBtn").on("click", function(){
+		inputUserWord();
 		showResultPage();
 	});
 

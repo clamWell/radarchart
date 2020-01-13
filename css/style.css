@@ -258,6 +258,14 @@ border-radius: 100%!important; display: block; background: none; border: 10px so
  background: #fff; background-clip: padding-box;border: 1px solid #ced4da;border-radius: 5px;font-family: 'Noto Sans KR', 'notokr-regular', 'Apple SD Gothic Neo','맑은 고딕', Malgun Gothic, '돋움', Dotum, Helvetica, AppleGothic, Sans-serif;  }
 .form-text-area:focus { box-shadow: 8px 8px 20px rgba(0,0,0,0.2);}
 
+.bottom-fixed-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 40px; }
+.bottom-fixed-bar .progress-bar { width: 100%; height: 100%;background:#fff; box-shadow: 0px 0px 15px rgba(65, 65, 74, 0.2);}
+.bottom-fixed-bar .progress-bar .progress-body { height:100%; width: 0%; background:#2b9867; }
+.bottom-fixed-bar .progress-bar .progress-text { position: absolute;   top: 0;  left: 0;width:100%; text-align: center; color:#111; text-shadow: 1px 1px 0px rgba(255,255,255,0.4); }
+.bottom-fixed-bar .progress-bar .progress-text p { font-size: 16px; line-height: 40px; font-weight: bold; letter-spacing: 5px; }
+.bottom-fixed-bar .progress-bar .progress-text p .done{ }
+.button-blocked { pointer-events: none; opacity: 0.4;}
+
 .page-result { }
 .result-area { position: relative; padding: 100px 0; }
 .user-result { margin-bottom:100px; width: 100%; max-width: 800px; margin:0 auto; }
@@ -286,6 +294,10 @@ border-radius: 100%!important; display: block; background: none; border: 10px so
 .result-table ul li .block-major .scale-block { background:#40a778; }
 .result-table ul li .block-minor  .scale-block{ background:#f16d48; }
 .result-table ul::after {clear: both; content: ""; display:block; }
+
+.result-percent-bar { display:none;max-width: 500px; margin: 30px auto; }
+.result-percent-bar {}
+
 .user-result-share {  margin-top: 20px; }
 .user-result-share .des { font-size: 16px; color: #5e636b;  text-align: center;}
 .totalUserNumb { font-weight:bold; border-bottom: 2px solid #111; color: #111;}

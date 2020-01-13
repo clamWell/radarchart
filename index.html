@@ -414,7 +414,7 @@
 												<ul class="anw-major">
 													<p class="title">그렇다</p>
 													<li class="each-scale scale-5">
-														<input type="radio" id="que_3_answer_major_5" class="radio-hidden" name="que_3_answer"
+														<input type="radio" id="que_3_answer_major_5" class="radio-hidden" name="que_3_answer" value="5">
 														<label class="anw-button" for="que_3_answer_major_5"></label> 
 													</li>
 													<li class="each-scale scale-4">
@@ -803,11 +803,19 @@
 
 
 							<div class="btn-holder">
-								<div class="button btn-black" id="goResultBtn">
+								<div class="button btn-black button-blocked" id="goResultBtn">
 									<p>결과보기<span class="icon"><img src="img/go-icon.png" alt=""></span></p>
 								</div>
 							</div>	
-						</div>					
+						</div>
+						<div class="bottom-fixed-bar">
+							<div class="progress-bar">
+								<div class="progress-body"></div>
+								<div class="progress-text">
+									<p><span class="done">0</span>/8</p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- page-2 test-->
@@ -842,7 +850,15 @@
 											<div class="tooltip"></div>
 										</div>
 									</div>
-
+									
+									<div class="result-percent-bar">
+										<div class="percent-bar">
+											<div class="bar-body"></div>
+											<div class="user-pos"></div>
+											<div class="side-major"></div>
+											<div class="side-minor"></div>
+										</div>
+									</div>
 
 									<div class="result-table user-result-table">
 										<ul>
@@ -888,7 +904,6 @@
 												</div>												
 											</li>
 										</ul>
-
 									</div>
 								</div>
 							</div>
