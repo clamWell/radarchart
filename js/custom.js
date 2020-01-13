@@ -7,8 +7,8 @@ $(function(){
 		isNotebook = (screenWidth <= 1300 && screenHeight < 750) && true || false,
 		isMobileLandscape = ( screenWidth > 400 && screenWidth <= 800 && screenHeight < 450 ) && true || false;
 	window.onbeforeunload = function(){ window.scrollTo(0, 0) ;}
-	var svgWidth = (screenWidth > 600)? 600 : screenWidth,
-		svgHeight = (screenHeight > 600) ? 600: screenHeight,
+	var svgWidth = (screenWidth > 600)? 600 : screenWidth-20,
+		svgHeight = (screenHeight > 600) ? 600: screenHeight-20,
 	    barHeight = svgHeight / 2 - 40;
 	var powerCategory =  ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
 
@@ -89,7 +89,7 @@ $(function(){
 			.text("특권영역")
 			.attr("class", "graph-semi-title")
 			.attr("text-anchor", "start")
-			.attr("transform", "translate(" + -45 + "," + -svgHeight/2 + ")");
+			.attr("transform", "translate(" + -45 + "," + -(svgHeight/2+7) + ")");
 		graphBack.append("text")
 			.attr("x", "15")
 			.attr("y", "-15")
@@ -99,7 +99,7 @@ $(function(){
 			.text("차별영역")
 			.attr("class", "graph-semi-title")
 			.attr("text-anchor", "start")
-			.attr("transform", "translate(" + -45 + "," +svgHeight/2 + ")");
+			.attr("transform", "translate(" + -45 + "," +(svgHeight/2+7) + ")");
 
 		var circleGraphHolder = svg.append("g")
 			.attr("class","circle-graph-holder");
@@ -195,21 +195,22 @@ $(function(){
 					.attr("d", arc)
 					.attr("class", "each-graph")
 					//.attr("filter", "url(#glow)");
+			if(isMobile==false){			
+				var tooltip = d3.select(".tooltip");
+				segments.on("mouseover", function(d) {
+						d3.select(this).classed("graph-hover", true);
+						tooltip
+						  .style("left", d3.event.pageX - 30 - (svgWidth/2)+ "px")
+						  .style("top", d3.event.pageY - 160 - (svgHeight/2) + "px")
+						  .style("display", "inline-block")
+						  .html((d.area) + "<br><span>" + (d.value) + "</span>");
 
-			var tooltip = d3.select(".tooltip");
-			segments.on("mouseover", function(d) {
-					d3.select(this).classed("graph-hover", true);
-					tooltip
-					  .style("left", d3.event.pageX - 30 - (svgWidth/2)+ "px")
-					  .style("top", d3.event.pageY - 160 - (svgHeight/2) + "px")
-					  .style("display", "inline-block")
-					  .html((d.area) + "<br><span>" + (d.value) + "</span>");
-
-				})
-				.on("mouseout", function(d) {
-					d3.select(this).classed("graph-hover", false)
-					tooltip.style("display", "none");
-				});
+					})
+					.on("mouseout", function(d) {
+						d3.select(this).classed("graph-hover", false)
+						tooltip.style("display", "none");
+					});
+			}			
 
 		}else if(type="interviewee"){
 			var segments =  circleGraphHolder.selectAll("path")
@@ -275,7 +276,7 @@ $(function(){
 		  .enter().append("text")
 			.style("text-anchor", "middle")
 			.style("font-weight","normal")
-			.style("font-size","11")
+			.style("font-size",(isMobile==true)? "8px":"11px")
 			.style("fill", function(d, i) {return "#111";})
 			.append("textPath")
 			.attr("class","label-text")
@@ -283,6 +284,10 @@ $(function(){
 			.attr("startOffset", function(d, i) {return i * 100 / numBars + 50 / numBars + '%';})
 			.text(function(d) {return d.toUpperCase(); });
 
+		if(isMobile==true){
+			d3.select(".title-up").style("top", svgHeight/2-28+"px");
+			d3.select(".title-down").style("top", svgHeight/2+"px");
+		}
 
 	};
 
@@ -325,15 +330,38 @@ $(function(){
 					}
 				}
 			})
-			.transition(1200)
+			.transition()
+			.duration(1000)
 			.attr("d", arc);
 		}, 1500);
+
 	}
 
 	makeChartBasic("#headGraph", introChartData, svgWidth, "intro", 20);
+	function hidePageTitle(){
+		$(".title-img").css({"height":"1px"});
+		if(isMobile==true){
+			$(".title-up .title-img").css({"top":"28px"});
+			$(".title-down .title-img").css({"top":"-10px"});
+		}else{
+			$(".title-up .title-img").css({"top":"82px"});
+			$(".title-down .title-img").css({"top":"-12px"});
+		}
+		
+	}
+	function showPageTitle(){
+		$(".title-up .title-img").animate({"height": $(".title-up .title-img").children("img").height()+"px", "top":"0px"},1500, "easeInOutQuad");
+		$(".title-down .title-img").animate({"height": $(".title-down .title-img").children("img").height()+"px", "top":"0px"}, 1500, "easeInOutQuad");		
+	}
 
+	hidePageTitle();
+
+	if(isMobile==true){
+		$(".test-area-body .que-list > ul > li").eq(0).css({"margin-top":"0"});
+	}
 	$(".loading-page").fadeOut(200, function(){
 		startIntroAni();
+		showPageTitle();
 	});
 
 	var userTestData = [];
