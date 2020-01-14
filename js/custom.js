@@ -315,10 +315,10 @@ $(function(){
 			.each(function(d,i) {
 				var radi = barScale(randomRange(1,5) );
 				if (i < introChartData.length/2){
-					if (randomRange(0, 1) == 1){
+					if ( randomRange(0, 1) == 1 ){ // 50% 확률로 1, 이 경우 반대축은 0  
 						checkPoint[i] = 1;
 						d.outerRadius = radi;
-					} else {
+					} else {// 50% 확률로 0, 0 나오면 이 축은 0 반대축이 값이 나옴 
 						checkPoint[i] = 0;
 						d.outerRadius = 0;
 					}
@@ -375,6 +375,11 @@ $(function(){
 
 
 	var userChoice = [0,0,0,0,0,0,0,0];
+
+	function makeScrollDownAuto(){
+		$("html, body").animate({scrollTop: scrollValue + ( $(".test-area-body .que-list > ul > li").height()+30)}, 500, "swing");
+	};
+
 	$(".test-form .each-scale .anw-button").on("click", function(e){
 		var clickedQueNum = $(this).siblings(".radio-hidden").attr("name").slice(4,5);
 		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
@@ -391,6 +396,7 @@ $(function(){
 		}
 		$(".bottom-fixed-bar .progress-bar .progress-text p .done").html( checkRadioBtnStatus());
 		$(".bottom-fixed-bar .progress-bar .progress-body").animate({"width":100/8*checkRadioBtnStatus()+ "%"}, 400, "swing");
+		makeScrollDownAuto();
 	});
 
 	var checkedPoint;
@@ -413,7 +419,7 @@ $(function(){
 			userInfoData[0] = clickedValue;
 		}if(clickedQueType=="age"){
 			userInfoData[1] = clickedValue;				
-		}		
+		}
 	});
 	$("textarea#user-opinion").bind("input propertychange", function() {
 		inputUserWord();	
@@ -521,6 +527,17 @@ $(function(){
 		});
 	};
 
+	function switchingResultGraphc(t){
+		$("#userResult .svgHolder").remove();
+		if(t =="user"){
+			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
+			console.log("응답자 그래프 그려주기");
+		}else if(t =="average"){		
+			console.log("사용자 평균 그래프 그려주기");
+			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
+			//makeChartBasic("#userResult", averageData, svgWidth, "user", 20);
+		}	
+	};
 
 	$("#goTestBtn").on("click", function(){
 		clearInterval(introAni);
@@ -533,6 +550,18 @@ $(function(){
 		goBackTestPage();
 	});
 
+	$(".switch-btn-holder .each-btn").on("click", function(){
+		var typeCheck = ($(this).hasClass("show-user"))? "user":"average";
+		switchingResultGraphc(typeCheck);
+		$(".switch-btn-holder .each-btn").removeClass("on");
+		$(this).addClass("on");
+	});
+	
+	var scrollValue;
+	$(window).scroll(function(){
+		scrollValue = $(document).scrollTop();
+	});
+	
 
 });
 

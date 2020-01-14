@@ -249,7 +249,7 @@ border-radius: 100%!important; display: block; background: #fff; border: 10px so
 .anw-noraml .each-scale .anw-button {transition:all 0.2s ease 0s;position: relative; width: 35px; height: 35px;
 border-radius: 100%!important; display: block; background: none; border: 10px solid #111; box-sizing: border-box; cursor: pointer; opacity:0.4;}
 .anw-noraml .each-scale .anw-button:hover{ opacity:1; box-shadow: 2px 2px 4px rgba(0,0,0,0.2);}
-.que-info { font-size: 14px; color: #222; opacity: 0.6;  margin-top: 10px;}
+.que-info { font-size: 14px; color: #222; opacity: 0.6;  margin-top: 10px; display:none; }
 .label-text {font-size: 14px; color: #222; opacity: 0.8;  text-align: center;  margin-top: 5px;}
 .each-que-lead .sm { display:block;margin-top: 10px; font-size: 17px; line-height: 1.5;  opacity: 0.6;
  color: #293240; font-weight: 600;}
@@ -303,6 +303,16 @@ border-radius: 100%!important; display: block; background: none; border: 10px so
 .result-percent-bar .percent-bar .side-major { position: absolute; right: 0px; top: -25px; font-size: 15px; color:#2b9867;  }
 .result-percent-bar .percent-bar .side-minor { position: absolute; left: 0px; top: -25px; font-size: 15px; text-align: right; color:#f16d48;}
 
+.graph-compare-panel { max-width: 500px; margin: 40px auto; }
+.graph-compare-panel .compare-with-average {width: 100%; }
+.switch-btn-holder { width: 100%; position: relative; box-sizing: border-box; padding: 0px 15px;text-align: center; }
+.switch-btn-holder > .each-btn { display: inline; box-sizing: border-box; padding: 8px 15px; background:#fff;
+ border: 1px solid #111; color:#111; font-size: 14px;  cursor: pointer; border-radius: 4px; opacity:0.7; }
+.switch-btn-holder > .each-btn:hover { opacity:1; }
+.switch-btn-holder .on { background:#111; opacity:1;  color:#fff; cursor: default; }
+.switch-btn-holder .switch-icon {display: inline; display: inline; margin: 0px 10px;vertical-align: top;}
+.switch-btn-holder .switch-icon img { width: 20px;vertical-align: middle;}
+.switch-btn-holder::after {clear: both; content: ""; display:block; }
 
 .user-result-share {  margin-top: 20px; }
 .user-result-share .des { font-size: 16px; color: #5e636b;  text-align: center;}
@@ -552,6 +562,9 @@ padding: 30px 0; text-align: center;  max-width: 500px; margin: 0 auto;}
 .result-table ul li .scale-block-holder .scale-block { width: 12px; height: 12px;  }
 .user-result-share .user-share-btn-box {width: 100%; box-sizing: border-box; padding: 0px 10px;}
 .user-share-btn { border-radius: 3px; }
+
+.switch-btn-holder .switch-icon { margin: 0 5px; }
+.switch-btn-holder > .each-btn { padding: 6px 10px; }
 
 .interviewee-result {  margin-top: 100px;}
 .interviewee-result-header { width: 92%; padding: 25px 0; }
