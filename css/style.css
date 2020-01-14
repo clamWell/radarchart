@@ -168,7 +168,7 @@ width: 27px; height: 30px;}
 .story-title .title-img-area .title-up { top: 220px; position: absolute; width: 1013px; height: 82px;  z-index: 2;}
 .story-title .title-img-area > div > .title-img { overflow: hidden;  height: auto; position: relative; }
 .story-title .title-img-area .title-down { position: absolute; width: 676px; height: 78px;left: 50%; top: 300px; margin-left: -327px;  z-index: 1;}
-.top-byline {     margin: 20px auto;}
+.top-byline { margin: 20px auto;     display: none;}
 .top-byline .top-border p { font-size: 13px; line-height:21px;text-align: center; }
 .top-byline .top-border p strong { margin: 0px 5px; }
 .top-byline .top-border p .jump { display:block; }
@@ -356,7 +356,7 @@ svg {display: block;  margin: 0 auto; }
 .graph-back { z-index:-1; }
 .circle-graph-holder {z-index:1; }
 .graph-semi-title {fill-opacity: 0.5; }
-.tooltip {pointer-events: none; position: absolute; display: none; min-width: 50px; height: auto; background: #fff;
+.tooltip {pointer-events: none; position: absolute; display: none; min-width: 50px; width: 100px; height: auto; background: #fff;
  padding: 9px 14px 6px 14px; border-radius: 2px; text-align: center;line-height: 1.3; color: #5B6770;box-shadow: 0px 3px 9px rgba(0, 0, 0, .15);}
 .tooltip span {font-weight: bold; color: #081F2C;}
 
@@ -386,6 +386,7 @@ color: #777;  background: url("http://img.khan.co.kr/spko/storytelling/2018/big/
 background-size: 15px 15px; padding-right: 20px;background-position: right;  cursor: pointer; opacity:0.7; }
 .rel-article .rel-box .rel-art-list .more-btn:hover { opacity:1; }
 .rel-article h4 { font-size: 16px;font-weight: 500;  text-align: center;margin-bottom: 20px;  margin-top: 20px;}
+.rel-article .rel-box-bottom { margin-top: 20px; }
 
 .bottom-byline {   width: 100%; max-width: 1050px;margin: 0 auto; margin-top: 20px;  }
 .bottom-byline ul { font-family: 'Noto Sans KR', 'notokr-regular';   box-sizing: border-box; 
@@ -533,10 +534,12 @@ padding: 30px 0; text-align: center;  max-width: 500px; margin: 0 auto;}
 .text-area-holder {  box-sizing: border-box;padding: 0px 20px;}
 .form-text-area {    box-sizing: border-box;}
 
+
 .result-area {  padding: 40px 0; padding-bottom: 20px; }
 .user-result-header { width: 92%; padding: 25px 0; }
 .user-result-header h2 { font-size: 24px; }
 .user-result-header .user-result-desc { font-size: 15px; }
+.result-chart .user-result-chart-holder svg { margin-top: 40px; }
 .result-chart { padding: 20px 0;  box-sizing: border-box;  padding: 0px 10px; }
 .result-chart .refer { font-size: 12px;}
 .user-result-chart-holder .each-graph { fill-opacity:1; }

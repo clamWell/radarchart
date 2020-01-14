@@ -10,8 +10,7 @@ $(function(){
 	var svgWidth = (screenWidth > 600)? 600 : screenWidth-20,
 		svgHeight = (screenHeight > 600) ? 600: screenHeight-20,
 	    barHeight = svgHeight / 2 - 40;
-	var powerCategory =  ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
-
+	var powerCategory = ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
 
 	var circleAxisBgColor = ["#cfcfcf", "#d8d8d8", "#e1e1e1", "#ebebeb","#f5f5f5"];
 	var randomRange = function(n1, n2) {
@@ -104,7 +103,6 @@ $(function(){
 		var circleGraphHolder = svg.append("g")
 			.attr("class","circle-graph-holder")
 			.attr("transform", "rotate(-90)");
-
 
 		var extent = [0, 5];
 
@@ -258,10 +256,10 @@ $(function(){
 
 		var baseLine = circleGraphHolder.append("line")
 			.classed("baseline", true)
-			.attr("y2",(barHeight+60)*2 )
+			.attr("y2",(barHeight+200)*2 )
 			.style("stroke", "#111")
 			.style("stroke-width","2px")
-			.attr("transform", "translate(0,"+ -1*(barHeight+60)+")");
+			.attr("transform", "translate(0,"+ -1*(barHeight+200)+")");
 
 		// 각 항목별 텍스트 라벨
 		var labelRadius = barHeight * 1.025;
@@ -537,3 +535,17 @@ $(function(){
 
 
 });
+
+function sendSns(s) {
+  var url = encodeURIComponent(location.href),
+	  txt = encodeURIComponent($("title").html());
+  switch (s) {
+    case 'facebook':
+      window.open('http://www.facebook.com/sharer/sharer.php?u=' + url);
+      break;
+    case 'twitter':
+      window.open('http://twitter.com/intent/tweet?text=' + txt + '&url=' + url);
+      break;
+  }
+}
+
