@@ -11,6 +11,7 @@ $(function(){
 		svgHeight = (screenHeight > 600) ? 600: screenHeight-20,
 	    barHeight = svgHeight / 2 - 40;
 	var powerCategory = ["성별 차별X", "이성애", "고학력","서울", "외모차별 X", "나이차별 X", "경제력(중산층)", "비장애", "성별차별 O", "성소수자", "저학력", "지방", "외모차별 O", "나이차별 O", "경제력(중산층 X)", "장애"];
+	var recordName = ["ngender", "hetero", "edu", "seoul", "nlooks", "nage", "wealth", "ndisable", "gender", "nhetero", "nedu", "nseoul", "looks", "age", "nwealth", "disable", "agegroup", "sex"];
 
 	var circleAxisBgColor = ["#cfcfcf", "#d8d8d8", "#e1e1e1", "#ebebeb","#f5f5f5"];
 	var randomRange = function(n1, n2) {
@@ -55,6 +56,8 @@ $(function(){
 		{area: "장애", value: 3, type: "minor"}
   	];
 
+	var statChartData = [];
+	var statData;
 
 	//인트로용 차트 데이터 생성
 	var introChartData = [];
@@ -195,7 +198,7 @@ $(function(){
 					.attr("d", arc)
 					.attr("class", "each-graph")
 					//.attr("filter", "url(#glow)");
-			if(isMobile==false){			
+			if(isMobile==false){
 				var tooltip = d3.select(".tooltip");
 				segments.on("mouseover", function(d) {
 						d3.select(this).classed("graph-hover", true);
@@ -210,7 +213,7 @@ $(function(){
 						d3.select(this).classed("graph-hover", false)
 						tooltip.style("display", "none");
 					});
-			}			
+			}
 
 		}else if(type="interviewee"){
 			var segments =  circleGraphHolder.selectAll("path")
@@ -315,10 +318,10 @@ $(function(){
 			.each(function(d,i) {
 				var radi = barScale(randomRange(1,5) );
 				if (i < introChartData.length/2){
-					if ( randomRange(0, 1) == 1 ){ // 50% 확률로 1, 이 경우 반대축은 0  
+					if ( randomRange(0, 1) == 1 ){ // 50% 확률로 1, 이 경우 반대축은 0
 						checkPoint[i] = 1;
 						d.outerRadius = radi;
-					} else {// 50% 확률로 0, 0 나오면 이 축은 0 반대축이 값이 나옴 
+					} else {// 50% 확률로 0, 0 나오면 이 축은 0 반대축이 값이 나옴
 						checkPoint[i] = 0;
 						d.outerRadius = 0;
 					}
@@ -347,11 +350,11 @@ $(function(){
 			$(".title-up .title-img").css({"top":"82px"});
 			$(".title-down .title-img").css({"top":"-12px"});
 		}
-		
+
 	}
 	function showPageTitle(){
 		$(".title-up .title-img").animate({"height": $(".title-up .title-img").children("img").height()+"px", "top":"0px"},1500, "easeInOutQuad");
-		$(".title-down .title-img").animate({"height": $(".title-down .title-img").children("img").height()+"px", "top":"0px"}, 1500, "easeInOutQuad");		
+		$(".title-down .title-img").animate({"height": $(".title-down .title-img").children("img").height()+"px", "top":"0px"}, 1500, "easeInOutQuad");
 	}
 
 	hidePageTitle();
@@ -384,7 +387,7 @@ $(function(){
 		var clickedQueNum = $(this).siblings(".radio-hidden").attr("name").slice(4,5);
 		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
 		var clickedPower = (clickedValue > 0)? "minor" : "major";
-	
+
 		if(clickedPower == "minor"){
 			userTestData[Number(clickedQueNum)+8-1].value = Math.abs(clickedValue);
 			userTestData[Number(clickedQueNum)-1].value = 0;
@@ -403,7 +406,7 @@ $(function(){
 	function checkRadioBtnStatus(){
 		checkedPoint = 0;
 		for(u=0; u< userChoice.length; u++){
-			if( isNaN(userChoice[u])){		
+			if( isNaN(userChoice[u])){
 				checkedPoint++;
 			}
 		}
@@ -411,28 +414,28 @@ $(function(){
 		return checkedPoint;
 	};
 
-	var userInfoData = [0,0,0];
+	var userInfoData = ["","",""];
 	$(".user-info-que-list .anw-button").on("click", function(e){
 		var clickedQueType = $(this).siblings(".radio-hidden").attr("name").slice(5);
 		var clickedValue = $(this).siblings(".radio-hidden").attr("value");
 		if(clickedQueType=="sex"){
 			userInfoData[0] = clickedValue;
 		}if(clickedQueType=="age"){
-			userInfoData[1] = clickedValue;				
+			userInfoData[1] = clickedValue;
 		}
 	});
 	$("textarea#user-opinion").bind("input propertychange", function() {
-		inputUserWord();	
+		inputUserWord();
 	});
 	function inputUserWord(){
 		userInfoData[2] = $("textarea#user-opinion").val();
 	}
-	
+
 	function drawPercentBar(){
 		var majorNumb = 0,
 			minorNumb = 0;
 		for(m=0; m< userChoice.length; m++){
-			if( userChoice[m] == "major"){		
+			if( userChoice[m] == "major"){
 				majorNumb++;
 			}
 			if(m==userChoice.length){
@@ -473,35 +476,39 @@ $(function(){
 			userChoice[n] = 0;
 		 }
 		 for(d=0;d<userInfoData.length;d++){
-			userInfoData[d] = 0;
+			userInfoData[d] = "";
 		 }
 		 $("#userResult .svgHolder").remove();
+		 $(".switch-btn-holder .each-btn").removeClass("on");
+		 $(".show-user").addClass("on");
+		 $(".show-average").addClass("show-average-blocked");
+		 $(".result-chart").removeClass("result-chart-average");
 	};
 	function resetRadioValue(){
 		var radio_name = [];
 		var radio = $("input[type=radio]");
-		$.each(radio, function (key, value) { 
+		$.each(radio, function (key, value) {
 			radio_name.push($(value).attr("name"));
-		});			
-		radio_name = $.unique(radio_name.sort()).sort(); 
-		console.log(radio_name);		
+		});
+		radio_name = $.unique(radio_name.sort()).sort();
+		console.log(radio_name);
 		for (var i = 0; i < radio_name.length; i++) {
-			$('input[name="' + radio_name[i] + '"]').removeAttr("checked");		
-			//$('input[name="' + radio_name[i] + '"]')[0].checked = true;		
+			$('input[name="' + radio_name[i] + '"]').removeAttr("checked");
+			//$('input[name="' + radio_name[i] + '"]')[0].checked = true;
 		}
 		$(".bottom-fixed-bar .progress-bar .progress-text p .done").html("0");
 		$(".bottom-fixed-bar .progress-bar .progress-body").width("0%");
-		$("#goResultBtn").addClass("button-blocked"); 
+		$("#goResultBtn").addClass("button-blocked");
 	}
 
 	function goBackTestPage(){
 		resetTestValue();
 		$(".page--3").fadeOut(function(){
-			$(".page--2").fadeIn();	
+			$(".page--2").fadeIn();
 			var testPagePosTop = $(".test-area-header").offset().top;
 			$("html, body").animate({scrollTop: testPagePosTop -100}, 500, "swing");
-		});	
-	};	
+		});
+	};
 
 	function showTestPage(){
 		$(".page--1").fadeOut(function(){
@@ -527,16 +534,49 @@ $(function(){
 		});
 	};
 
+	function statDataPlot(t){
+
+		statChartData = [];
+
+		statData.forEach(function(v, i, a){
+			if (v.type == t){
+				for(i = 0; i < powerCategory.length; i++){
+					var temp = {};
+					temp.area = powerCategory[i];
+					temp.value = Number((v[recordName[i]] / v.count).toFixed(2));
+					temp.type = (i > 7) ? "minor":"major";
+					statChartData.push(temp);
+				}
+			}
+/*			for (i = 0; i < 8; i++){
+				var valueSum = statChartData[i].value - statChartData[i+8].value;
+				if (valueSum > 0){
+					statChartData[i].value = valueSum;
+					statChartData[i+8].value = 0;
+				} else if (valueSum < 0) {
+					statChartData[i].value = 0;
+					statChartData[i+8].value = Math.abs(valueSum);
+				} else {
+					statChartData[i].value = 0;
+					statChartData[i+8].value = 0;
+				}
+			}*/
+		});
+
+		makeChartBasic("#userResult", statChartData, svgWidth, "user", 20);
+	}
+
 	function switchingResultGraphc(t){
 		$("#userResult .svgHolder").remove();
 		if(t =="user"){
+			$(".result-chart").removeClass("result-chart-average");
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
 			console.log("응답자 그래프 그려주기");
-		}else if(t =="average"){		
+		}else if(t =="average"){
+			$(".result-chart").addClass("result-chart-average");
 			console.log("사용자 평균 그래프 그려주기");
-			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
-			//makeChartBasic("#userResult", averageData, svgWidth, "user", 20);
-		}	
+			statDataPlot("all");
+		}
 	};
 
 	$("#goTestBtn").on("click", function(){
@@ -544,8 +584,47 @@ $(function(){
 		showTestPage();
 	});
 	$("#goResultBtn").on("click", function(){
+
+		var record = {};
+
+		userTestData.forEach(function(v, i, a){
+			record[recordName[i]] = v.value;
+		});
+
+
+		record.sex = userInfoData[0];
+		record.agegroup = userInfoData[1];
+		record.comment = userInfoData[2];
+		record.password = "ok!";
+
+		console.log(record);
+
+		setTimeout(function(){
+
+			$.ajax({
+			  url: "dataload.php",
+			  data: record,
+			  type: "POST",
+			  success: function() {
+
+				$.getJSON("dataload.php", function(data) {
+					statData = data;
+					$(".totalUserNumb").html(statData[0].count + "명");
+					$(".show-average").removeClass("show-average-blocked");
+
+				});
+
+			  }
+
+			});
+
+		}, 500);
+
 		showResultPage();
+
 	});
+
+
 	$("#retest").on("click", function(){
 		goBackTestPage();
 	});
@@ -556,12 +635,12 @@ $(function(){
 		$(".switch-btn-holder .each-btn").removeClass("on");
 		$(this).addClass("on");
 	});
-	
+
 	var scrollValue;
 	$(window).scroll(function(){
 		scrollValue = $(document).scrollTop();
 	});
-	
+
 
 });
 
@@ -577,4 +656,3 @@ function sendSns(s) {
       break;
   }
 }
-
