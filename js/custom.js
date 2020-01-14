@@ -102,7 +102,9 @@ $(function(){
 			.attr("transform", "translate(" + -45 + "," +(svgHeight/2+7) + ")");
 
 		var circleGraphHolder = svg.append("g")
-			.attr("class","circle-graph-holder");
+			.attr("class","circle-graph-holder")
+			.attr("transform", "rotate(-90)");
+
 
 		var extent = [0, 5];
 
@@ -256,10 +258,10 @@ $(function(){
 
 		var baseLine = circleGraphHolder.append("line")
 			.classed("baseline", true)
-			.attr("y2",(barHeight+200)*2 )
+			.attr("y2",(barHeight+60)*2 )
 			.style("stroke", "#111")
 			.style("stroke-width","2px")
-			.attr("transform", "translate(0,"+ -1*(barHeight+200)+")");
+			.attr("transform", "translate(0,"+ -1*(barHeight+60)+")");
 
 		// 각 항목별 텍스트 라벨
 		var labelRadius = barHeight * 1.025;

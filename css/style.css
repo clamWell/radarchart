@@ -167,7 +167,7 @@ width: 27px; height: 30px;}
 .story-title .title-img-area {position: absolute; width: 1013px; height: 600px; top: 0;left: 50%; margin-left: -506px; }
 .story-title .title-img-area .title-up { top: 220px; position: absolute; width: 1013px; height: 82px;  z-index: 2;}
 .story-title .title-img-area > div > .title-img { overflow: hidden;  height: auto; position: relative; }
-.story-title .title-img-area .title-down { position: absolute; width: 654px; height: 74px;left: 50%; top: 300px; margin-left: -327px;  z-index: 1;}
+.story-title .title-img-area .title-down { position: absolute; width: 676px; height: 78px;left: 50%; top: 300px; margin-left: -327px;  z-index: 1;}
 .top-byline {     margin: 20px auto;}
 .top-byline .top-border p { font-size: 13px; line-height:21px;text-align: center; }
 .top-byline .top-border p strong { margin: 0px 5px; }
@@ -276,6 +276,7 @@ border-radius: 100%!important; display: block; background: none; border: 10px so
 .user-result-header .user-result-desc {  font-size: 18px; color: #5e636b; }
 .user-result-body { width: 100%; margin-bottom: 30px; }
 .user-result-body .user-result-box { width:100%; }
+.result-chart .refer { font-size: 13px; color:#777;  max-width: 500px; margin: 0 auto; margin-top: 20px;}
 .result-chart { box-sizing:border-box; padding: 30px; position: relative; }
 .result-chart .user-result-chart-holder {position: relative; }
 .result-chart .user-result-chart-holder svg { }
@@ -344,7 +345,7 @@ padding: 15px; text-align: center; float: left; border-radius: 2px;cursor: point
 .headGraph .label-text {fill-opacity: 0.5; }
 #chart { display:none; }
 svg {display: block;  margin: 0 auto; }
-.circle-graph-holder {transform: rotate(-90deg);}
+.circle-graph-holder {transform: rotate(-90deg); -webkit-transform: rotate(-90deg);-ms-transform: rotate(-90deg);-o-transform: rotate(-90deg);}
 .axis path,.axis line {fill: none;stroke: #fff;shape-rendering: crispEdges;}
 .x.axis path { display: none;}
 .axis .tick {}
@@ -536,7 +537,8 @@ padding: 30px 0; text-align: center;  max-width: 500px; margin: 0 auto;}
 .user-result-header { width: 92%; padding: 25px 0; }
 .user-result-header h2 { font-size: 24px; }
 .user-result-header .user-result-desc { font-size: 15px; }
-.result-chart { padding: 20px 0; }
+.result-chart { padding: 20px 0;  box-sizing: border-box;  padding: 0px 10px; }
+.result-chart .refer { font-size: 12px;}
 .user-result-chart-holder .each-graph { fill-opacity:1; }
 .result-percent-bar {  width: 100%; box-sizing: border-box; padding: 0px 15px; }
 .result-percent-bar .percent-bar .side-minor { font-size: 14px; font-weight:bold; }
