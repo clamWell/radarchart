@@ -61,6 +61,7 @@ $(function(){
 
 	//인트로용 차트 데이터 생성
 	var introChartData = [];
+
 	for(i=0;i<powerCategory.length;i++){
 		var obj = {};
 		obj.area = powerCategory[i];
@@ -68,6 +69,7 @@ $(function(){
 		obj.type = (i>7)? "minor":"major";
 		introChartData.push(obj);
 	}
+
 	function makeChartBasic(svgName, chartData, chartWidth, type, padding){
 		var data = chartData,
 			svgWidth = svgHeight = chartWidth,
@@ -77,8 +79,9 @@ $(function(){
 			.attr("width", svgWidth)
 			.attr("height", svgHeight)
 			.append("g")
-				.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")")
-				.attr("class", "svgHolder");
+			.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")")
+			.attr("class", "svgHolder");
+				
 		var graphBack = svg.append("g")
 			.attr("class","graph-back");
 
@@ -139,17 +142,18 @@ $(function(){
 				.innerRadius(0)
 				.startAngle(function(d,i) { return (i * 2 * Math.PI) / numBars; }) //시작각
 				.endAngle( function(d,i) { return ((i + 1) * 2 * Math.PI) / numBars; }); //끝각
+
+		var segments = circleGraphHolder.selectAll("path")
+				.data(data)
+				.enter().append("path");
+
 		if(type=="intro"){
 
 			var checkPoint = new Array(data.length);
 			checkPoint.forEach(function(v,i,a){
 				v[i] = 0;
 			});
-
-			var segments = circleGraphHolder.selectAll("path")
-					.data(data)
-				.enter().append("path")
-					.each(function(d,i) {
+			segments.each(function(d,i) {
 						var radi = barScale(randomRange(1,5) );
 
 						if (i < data.length/2){
@@ -158,13 +162,13 @@ $(function(){
 								d.outerRadius = radi;
 							} else {
 								checkPoint[i] = 0;
-								d.outerRadius = 0;
+								d.outerRadius = 0.1;
 							}
 						} else {
 							if (checkPoint[i-(data.length/2)] == 0) {
 								d.outerRadius = radi;
 							} else {
-								d.outerRadius = 0;
+								d.outerRadius = 0.1;
 							}
 						}
 
@@ -175,16 +179,13 @@ $(function(){
 						}else if(d.type=="minor") {
 							return "url(#redGrad)";
 						}
-					})
-					.attr("d", arc)
-					.attr("class", "each-graph");
+					});
+
 		} else if(type=="user"){
-			var segments =  circleGraphHolder.selectAll("path")
-					.data(data)
-				.enter().append("path")
-					.each(function(d,i) {  //데이터 값에 맞게 길이를 반환해줌
+
+			segments.each(function(d,i) {  //데이터 값에 맞게 길이를 반환해줌
 						var radi = barScale(d.value);
-						d.outerRadius = radi;
+						d.value == 0 ? d.outerRadius = 0.1 : d.outerRadius = radi;
 					})
 					.style("fill", function(d,i){
 						if(d.type=="major"){
@@ -194,9 +195,7 @@ $(function(){
 							//return "url(#redGrad)";
 							return "#f16d48";
 						}
-					})
-					.attr("d", arc)
-					.attr("class", "each-graph")
+					});
 					//.attr("filter", "url(#glow)");
 			if(isMobile==false){
 				var tooltip = d3.select(".tooltip");
@@ -216,10 +215,8 @@ $(function(){
 			}
 
 		}else if(type="interviewee"){
-			var segments =  circleGraphHolder.selectAll("path")
-					.data(data)
-				.enter().append("path")
-					.each(function(d,i) {  //데이터 값에 맞게 길이를 반환해줌
+
+			segments.each(function(d,i) {  //데이터 값에 맞게 길이를 반환해줌
 						var radi = barScale(d.value);
 						d.outerRadius = radi;
 					})
@@ -231,11 +228,15 @@ $(function(){
 							//return "url(#redGrad)";
 							return "#f16d48";
 						}
-					})
-					.attr("d", arc)
-					.attr("class", "each-graph")
+					});
 					//.attr("filter", "url(#glow)");
 		}
+
+		segments
+		.transition()
+		.attr("d", arc)
+		.attr("class", "each-graph");
+
 
 
 		// 가장 밖의 원 테두리
@@ -316,20 +317,20 @@ $(function(){
 
 			d3.select("#headGraph").selectAll("path").data(introChartData)
 			.each(function(d,i) {
-				var radi = barScale(randomRange(1,5) );
+				var radi = barScale(randomRange(1,5));
 				if (i < introChartData.length/2){
 					if ( randomRange(0, 1) == 1 ){ // 50% 확률로 1, 이 경우 반대축은 0
 						checkPoint[i] = 1;
 						d.outerRadius = radi;
 					} else {// 50% 확률로 0, 0 나오면 이 축은 0 반대축이 값이 나옴
 						checkPoint[i] = 0;
-						d.outerRadius = 0;
+						d.outerRadius = 0.1;
 					}
 				} else {
 					if (checkPoint[i-(introChartData.length/2)] == 0) {
 						d.outerRadius = radi;
 					} else {
-						d.outerRadius = 0;
+						d.outerRadius = 0.1;
 					}
 				}
 			})
@@ -491,7 +492,7 @@ $(function(){
 			radio_name.push($(value).attr("name"));
 		});
 		radio_name = $.unique(radio_name.sort()).sort();
-		console.log(radio_name);
+		//console.log(radio_name);
 		for (var i = 0; i < radio_name.length; i++) {
 			$('input[name="' + radio_name[i] + '"]').removeAttr("checked");
 			//$('input[name="' + radio_name[i] + '"]')[0].checked = true;
@@ -523,9 +524,9 @@ $(function(){
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
 			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
 			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
-			console.log(userTestData);
-			console.log(userChoice);
-			console.log(userInfoData);
+			//console.log(userTestData);
+			//console.log(userChoice);
+			//console.log(userInfoData);
 			drawPercentBar();
 			drawUserScaleBlcok();
 			$(".page--3").fadeIn();
@@ -543,25 +544,27 @@ $(function(){
 				for(i = 0; i < powerCategory.length; i++){
 					var temp = {};
 					temp.area = powerCategory[i];
-					temp.value = Number((v[recordName[i]] / v.count).toFixed(2));
+					temp.value = v[recordName[i]];
+					//temp.value = Number((v[recordName[i]] / v.count).toFixed(2));
 					temp.type = (i > 7) ? "minor":"major";
 					statChartData.push(temp);
 				}
 			}
-/*			for (i = 0; i < 8; i++){
-				var valueSum = statChartData[i].value - statChartData[i+8].value;
-				if (valueSum > 0){
-					statChartData[i].value = valueSum;
-					statChartData[i+8].value = 0;
-				} else if (valueSum < 0) {
-					statChartData[i].value = 0;
-					statChartData[i+8].value = Math.abs(valueSum);
-				} else {
-					statChartData[i].value = 0;
-					statChartData[i+8].value = 0;
-				}
-			}*/
 		});
+
+		for (i = 0; i < 8; i++){
+			var valueSum = Number(((statChartData[i].value - statChartData[i+8].value) / statData[0].count).toFixed(2));
+			if (valueSum > 0){
+				statChartData[i].value = valueSum;
+				statChartData[i+8].value = 0;
+			} else if (valueSum < 0) {
+				statChartData[i].value = 0;
+				statChartData[i+8].value = Math.abs(valueSum);
+			} else {
+				statChartData[i].value = 0;
+				statChartData[i+8].value = 0;
+			}
+		}
 
 		makeChartBasic("#userResult", statChartData, svgWidth, "user", 20);
 	}
@@ -571,10 +574,10 @@ $(function(){
 		if(t =="user"){
 			$(".result-chart").removeClass("result-chart-average");
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
-			console.log("응답자 그래프 그려주기");
+			//console.log("응답자 그래프 그려주기");
 		}else if(t =="average"){
 			$(".result-chart").addClass("result-chart-average");
-			console.log("사용자 평균 그래프 그려주기");
+			//console.log("사용자 평균 그래프 그려주기");
 			statDataPlot("all");
 		}
 	};
@@ -597,7 +600,7 @@ $(function(){
 		record.comment = userInfoData[2];
 		record.password = "ok!";
 
-		console.log(record);
+		//console.log(record);
 
 		setTimeout(function(){
 
@@ -610,6 +613,7 @@ $(function(){
 				$.getJSON("dataload.php", function(data) {
 					statData = data;
 					$(".totalUserNumb").html(statData[0].count + "명");
+					$(".user-result-share .des em").show();
 					$(".show-average").removeClass("show-average-blocked");
 
 				});
