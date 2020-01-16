@@ -81,7 +81,7 @@ $(function(){
 			.append("g")
 			.attr("transform", "translate(" + svgWidth/2 + "," +svgHeight/2 + ")")
 			.attr("class", "svgHolder");
-				
+
 		var graphBack = svg.append("g")
 			.attr("class","graph-back");
 
@@ -429,7 +429,7 @@ $(function(){
 		inputUserWord();
 	});
 	function inputUserWord(){
-		userInfoData[2] = $("textarea#user-opinion").val();
+		userInfoData[2] = $("textarea#user-opinion").val().replace(/,/g,"，");
 	}
 
 	function drawPercentBar(){
@@ -538,9 +538,11 @@ $(function(){
 	function statDataPlot(t){
 
 		statChartData = [];
-
+		
+		var typeCount;
 		statData.forEach(function(v, i, a){
 			if (v.type == t){
+				typeCount = v.count;
 				for(i = 0; i < powerCategory.length; i++){
 					var temp = {};
 					temp.area = powerCategory[i];
@@ -549,11 +551,13 @@ $(function(){
 					temp.type = (i > 7) ? "minor":"major";
 					statChartData.push(temp);
 				}
-			}
+			}			
 		});
 
+		//console.log(statChartData);
+
 		for (i = 0; i < 8; i++){
-			var valueSum = Number(((statChartData[i].value - statChartData[i+8].value) / statData[0].count).toFixed(2));
+			var valueSum = Number(((statChartData[i].value - statChartData[i+8].value) / typeCount ).toFixed(2));
 			if (valueSum > 0){
 				statChartData[i].value = valueSum;
 				statChartData[i+8].value = 0;
@@ -574,13 +578,24 @@ $(function(){
 		if(t =="user"){
 			$(".result-chart").removeClass("result-chart-average");
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
-			//console.log("응답자 그래프 그려주기");
+			$(".category-tab").hide();
+			$(".category-tab ul li").removeClass("on");
+			$(".category-tab ul li").eq(0).addClass("on");
 		}else if(t =="average"){
 			$(".result-chart").addClass("result-chart-average");
-			//console.log("사용자 평균 그래프 그려주기");
+			$(".category-tab").show();
 			statDataPlot("all");
 		}
 	};
+
+	$(".category-tab ul li").on("click", function(){
+		$(".category-tab ul li").removeClass("on");
+		$(this).addClass("on");	
+		
+		var type = $(this).attr("data-type");
+		$("#userResult .svgHolder").remove();
+		statDataPlot(type);
+	});
 
 	$("#goTestBtn").on("click", function(){
 		clearInterval(introAni);
@@ -589,36 +604,30 @@ $(function(){
 	$("#goResultBtn").on("click", function(){
 
 		var record = {};
-
 		userTestData.forEach(function(v, i, a){
 			record[recordName[i]] = v.value;
 		});
-
 
 		record.sex = userInfoData[0];
 		record.agegroup = userInfoData[1];
 		record.comment = userInfoData[2];
 		record.password = "ok!";
 
-		//console.log(record);
-
 		setTimeout(function(){
-
 			$.ajax({
-			  url: "dataload.php",
-			  data: record,
-			  type: "POST",
-			  success: function() {
+				url: "dataload.php",
+				data: record,
+				type: "POST",
+				success: function() {
+					$.getJSON("dataload.php", function(data) {
+						statData = data;
+						console.log(statData);
+						$(".totalUserNumb").html(statData[0].count + "명");
+						$(".user-result-share .des em").show();
+						$(".show-average").removeClass("show-average-blocked");
 
-				$.getJSON("dataload.php", function(data) {
-					statData = data;
-					$(".totalUserNumb").html(statData[0].count + "명");
-					$(".user-result-share .des em").show();
-					$(".show-average").removeClass("show-average-blocked");
-
-				});
-
-			  }
+					});
+				}
 
 			});
 
