@@ -429,7 +429,7 @@ $(function(){
 		inputUserWord();
 	});
 	function inputUserWord(){
-		userInfoData[2] = $("textarea#user-opinion").val().replace(/,/g,"，");
+		userInfoData[2] = $("textarea#user-opinion").val().replace(/,/g,"，").replace(/:/g, "：");
 	}
 
 	function drawPercentBar(){
