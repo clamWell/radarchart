@@ -288,6 +288,7 @@
 						<div class="button btn-green" id="goTestBtn">
 							<p>나의 차트 그려보기<span class="icon"><img src="http://img.khan.co.kr/spko/storytelling/2020/minor/go-icon.png" alt=""></span></p>
 						</div>
+						<div class="button btn-black btn-second" id="skipTest"><p>결과로 바로가기</p></div>
 					</div>
 				</div>
 				<!-- page-1 intro-->
@@ -825,9 +826,13 @@
 					<div class="result-area">
 
 						<div class="user-result">
-							<div class="user-result-header">
+							<div class="user-result-header user-result-when-test">
 								<h2>나는 어디에 서 있을까?</h2>
 								<p class="user-result-desc">‘차별 경험’ 질문의 응답을 통해 당신의 차트를 그려보았습니다. 차트가 위를 향하는 모양 일수록 사회적 혜택을 받는 경험이 많다는 의미입니다. 차트가 아래를 향하는 모양일수록 당신은 차별을 받은 경험이 많을지도 모릅니다. 각각의 항목에 대해 자신이 얼마만큼의 특권과 차별이 있는지 퍼센트(%)를 통해 표시해드립니다. 여러분은 어디에 서 있나요.</p>
+							</div>
+							<div class="user-result-header user-result-when-skip">
+								<h2>다른 응답자들은 어디에 서 있을까?</h2>
+								<p class="user-result-desc">응답자들의‘차별 경험’ 질문의 응답을 통해 그려본 차트입니다. 차트가 위를 향하는 모양 일수록 사회적 혜택을 받는 경험이 많다는 의미입니다. 차트가 아래를 향하는 모양일수록 차별을 받은 경험이 많음을 의미합니다. 여러분은 어디에 서 있나요? 궁금하시면 진단하기를 클릭해주세요.</p>
 							</div>
 							<div class="user-result-body">
 								<div class="user-result-box">
@@ -873,60 +878,61 @@
 											<p class="refer">※본 그래픽은 한국성폭력상담소에서 발행한 &lt;성폭력사건지원 나침반을 찾아라(2008)&gt;에 나오는 도표를 인용하여 수정해 만든 것입니다</p>
 										</div>
 									</div>
-									<div class="result-percent-bar">
-										<div class="percent-bar">
-											<div class="bar-body"></div>
-											<div class="user-pos"></div>
-											<div class="side-major">특권 <span class="numb"></span>%</div>
-											<div class="side-minor">차별 <span class="numb"></span>%</div>
+									<div class="result-info-bottom">
+										<div class="result-percent-bar">
+											<div class="percent-bar">
+												<div class="bar-body"></div>
+												<div class="user-pos"></div>
+												<div class="side-major">특권 <span class="numb"></span>%</div>
+												<div class="side-minor">차별 <span class="numb"></span>%</div>
+											</div>
 										</div>
-									</div>
+										<div class="result-table user-result-table">
+											<ul>
+												<li>
+													<div class="text"><span class="head">성별</span><span class="majororminor">차별</span></div>
+													<div class="scale-block-holder">
 
-									<div class="result-table user-result-table">
-										<ul>
-											<li>
-												<div class="text"><span class="head">성별</span><span class="majororminor">차별</span></div>
-												<div class="scale-block-holder">
-
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">성적지향</span><span class="majororminor">특권</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">학력</span><span class="majororminor">특권</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">거주지</span><span class="majororminor">차별</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">외모</span><span class="majororminor">특권</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">나이</span><span class="majororminor">차별</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">경제력</span><span class="majororminor">특권</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-											<li>
-												<div class="text"><span class="head">장애</span><span class="majororminor">특권</span></div>
-												<div class="scale-block-holder">
-												</div>
-											</li>
-										</ul>
-									</div>
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">성적지향</span><span class="majororminor">특권</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">학력</span><span class="majororminor">특권</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">거주지</span><span class="majororminor">차별</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">외모</span><span class="majororminor">특권</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">나이</span><span class="majororminor">차별</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">경제력</span><span class="majororminor">특권</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+												<li>
+													<div class="text"><span class="head">장애</span><span class="majororminor">특권</span></div>
+													<div class="scale-block-holder">
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>									
 								</div>
 							</div>
 							<div class="user-result-share">
@@ -939,6 +945,9 @@
 
 							<div class="btn-holder">
 								<div class="button btn-green" id="retest"><p>진단 다시하기</p></div>
+								<div class="button btn-green btn-second" id="testAfterSkip">
+									<p>나의 차트 그려보기<span class="icon"><img src="http://img.khan.co.kr/spko/storytelling/2020/minor/go-icon.png" alt=""></span></p>
+								</div>
 							</div>
 						</div>
 						<div class="interviewee-result">
@@ -1138,7 +1147,19 @@
 					</div>
 				</div>
 				<!-- page-3 result-->
-
+				
+				<div class="tempo-loading">
+					<div class="load-msg">
+						<div class="spinner">
+							  <div class="bounce1"></div>
+							  <div class="bounce2"></div>
+							  <div class="bounce3"></div>
+						</div>
+						<p>응답자 누적 데이터를 로딩중입니다...</p>
+						<p class="sm">* 네트워크 환경에 따라 2 ~ 5초 가량이 소요될 수 있습니다.</p>
+					</div>
+					
+				</div>
 				<!-- 하단 공통영역 (S) -->
 				<div class="footer-area">
 					<div class="bottom-byline">

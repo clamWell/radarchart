@@ -521,6 +521,13 @@ $(function(){
 
 	function showResultPage(){
 		$(".page--2").fadeOut(function(){
+			$(".user-result-header").hide();
+			$(".user-result-when-test").show();
+			$(".result-info-bottom").show();
+			$(".user-result-share").show();
+			$(".graph-compare-panel").show();
+			$("#retest").show();
+			$("#testAfterSkip").hide();
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
 			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
 			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
@@ -602,8 +609,13 @@ $(function(){
 		showTestPage();
 	});
 	$("#goResultBtn").on("click", function(){
+		recordData();
+		setTimeout(roadData(), 500);
+		showResultPage();
+	});
 
-		var record = {};
+	var record = {};
+	function recordData(){
 		userTestData.forEach(function(v, i, a){
 			record[recordName[i]] = v.value;
 		});
@@ -612,35 +624,61 @@ $(function(){
 		record.agegroup = userInfoData[1];
 		record.comment = userInfoData[2];
 		record.password = "ok!";
+	}
 
-		setTimeout(function(){
-			$.ajax({
-				url: "dataload.php",
-				data: record,
-				type: "POST",
-				success: function() {
-					$.getJSON("dataload.php", function(data) {
-						statData = data;
-						console.log(statData);
-						$(".totalUserNumb").html(statData[0].count + "명");
-						$(".user-result-share .des em").show();
+	function roadData(s){
+		$.ajax({
+			url: "dataload.php",
+			data: record,
+			type: "POST",
+			success: function() {
+				$.getJSON("dataload.php", function(data) {
+					statData = data;
+					//console.log(statData);
+					$(".totalUserNumb").html(statData[0].count + "명");
+					$(".user-result-share .des em").show();
+					if(s==undefined){
 						$(".show-average").removeClass("show-average-blocked");
+					}else if(s=="skip"){
+						showSkipResult();	
+					}
+					
 
-					});
-				}
+				});
+			}
 
-			});
+		});	
+	}
 
-		}, 500);
-
-		showResultPage();
-
-	});
-
-
-	$("#retest").on("click", function(){
+	$("#retest, #testAfterSkip").on("click", function(){
 		goBackTestPage();
 	});
+
+	function showSkipResult(){
+		$(".tempo-loading").hide();
+		$(".page--1").fadeOut(function(){
+			$(".user-result-header").hide();
+			$(".user-result-when-skip").show();
+			$(".result-info-bottom").hide();
+			$(".graph-compare-panel").hide();
+			$("#retest").hide();
+			$("#testAfterSkip").show();
+			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
+			makeChartBasic("#intervieweeChart02", interviewwData2, svgWidth, "interviewee", 20);
+			statDataPlot("all");
+			$("html, body").animate({scrollTop: 0}, 1000, "swing");
+			$(".page--3").fadeIn();		
+		});		
+	};
+
+	$("#skipTest").on("click", function(){
+		$(".tempo-loading").fadeIn(function(){
+			clearInterval(introAni);
+			roadData("skip");
+		})		
+	
+	});
+
 
 	$(".switch-btn-holder .each-btn").on("click", function(){
 		var typeCheck = ($(this).hasClass("show-user"))? "user":"average";
