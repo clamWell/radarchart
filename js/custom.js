@@ -525,7 +525,8 @@ $(function(){
 			$(".user-result-when-test").show();
 			$(".result-info-bottom").show();
 			$(".user-result-share").show();
-			$(".graph-compare-panel").show();
+			$(".switch-btn-holder").show();
+			$(".category-tab").hide();
 			$("#retest").show();
 			$("#testAfterSkip").hide();
 			makeChartBasic("#userResult", userTestData, svgWidth, "user", 20);
@@ -561,7 +562,9 @@ $(function(){
 			}			
 		});
 
+
 		//console.log(statChartData);
+		
 
 		for (i = 0; i < 8; i++){
 			var valueSum = Number(((statChartData[i].value - statChartData[i+8].value) / typeCount ).toFixed(2));
@@ -576,6 +579,15 @@ $(function(){
 				statChartData[i+8].value = 0;
 			}
 		}
+
+		var forPrint = [];
+		
+		statChartData.forEach(function(v, i, a){
+			var str = statChartData[i].area+"항목의 값은 "+statChartData[i].value;
+			forPrint.push(str);
+		});
+
+		console.log(forPrint);
 
 		makeChartBasic("#userResult", statChartData, svgWidth, "user", 20);
 	}
@@ -660,7 +672,8 @@ $(function(){
 			$(".user-result-header").hide();
 			$(".user-result-when-skip").show();
 			$(".result-info-bottom").hide();
-			$(".graph-compare-panel").hide();
+			$(".switch-btn-holder").hide();
+			$(".category-tab").show();
 			$("#retest").hide();
 			$("#testAfterSkip").show();
 			makeChartBasic("#intervieweeChart01", interviewwData1, svgWidth, "interviewee", 20);
@@ -675,8 +688,7 @@ $(function(){
 		$(".tempo-loading").fadeIn(function(){
 			clearInterval(introAni);
 			roadData("skip");
-		})		
-	
+		})			
 	});
 
 
